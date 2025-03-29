@@ -1,0 +1,137 @@
+.contact-container {
+  display: flex;
+  width: 35vw;
+  margin-left: 150px;
+}
+
+.contact-form-container {
+  width: 100%;
+}
+
+.contact-form input,
+.contact-form textarea {
+  max-width: 90%;
+  margin: 15px;
+  padding: 4px 10px;
+  border: 0px solid transparent;
+  color: #d9dcdd;
+  background: hsl(233, 50%, 7%);
+  width: 90%;
+  line-height: 1.6;
+  font-size: 1.05rem;
+  height: 50px;
+}
+
+.mapAndContact {
+  display: flex;
+  margin-left: 10vw;
+  margin-right: 10vw;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  gap: 1rem;
+  margin-top: 20px;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.map img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.5s ease-in-out;
+}
+
+.map:hover img {
+  transform: scale(3);
+}
+
+.mapMarker {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  transform: translate(-50%, -50%);
+  height: 3rem;
+  width: 3rem;
+  color: hsl(168, 100%, 33%);
+  transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
+}
+
+.map:hover .mapMarker {
+  left: 50%;
+  top: 25%;
+}
+
+.address {
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.03rem;
+  line-height: 1.6;
+  color: hsl(232, 50%, 93%);
+}
+
+.resumeDownloadButton {
+  width: 100%;
+  max-width: 250px;
+  padding: 0.4rem;
+  border: none;
+  border-radius: 0.3rem;
+  background-color: hsl(161, 86%, 44%);
+  color: hsl(232, 50%, 7%);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  line-height: 1.6;
+  cursor: pointer;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.resumeDownloadButton:hover {
+  background-color: hsl(161, 86%, 40%);
+}
+
+@media screen and (max-width: 768px) {
+  .contact-container {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mapAndContact {
+    flex-direction: column;
+    margin-left: 5vw;
+    margin-right: 5vw;
+  }
+
+  .map {
+    max-width: 100%;
+    height: 250px;
+  }
+
+  .address {
+    max-width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .resumeDownloadButton {
+    max-width: 200px;
+  }
+}
