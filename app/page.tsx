@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SiCodechef, SiCodeforces, SiLeetcode, SiGmail, SiCodingninjas } from "react-icons/si";
@@ -16,8 +16,30 @@ import Experience from "@/app/components/experience/experience";
 import Contact from "@/app/components/contact/contact";
 import Projects from "@/app/components/projects/projects";
 import Achievements from "@/app/components/achievements/achievements";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [windowSize, setWindowSize] = useState({ width: 500, height: 500 });
+  const [isResumeHovered, setIsResumeHovered] = useState(false);
+
+  useEffect(() => {
+    // Only run on the client side
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const projects = [
     {
       title: "Portfolio Website",
@@ -58,13 +80,13 @@ export default function Home() {
                 key={i}
                 className="hero-particle"
                 initial={{
-                  x: Math.random() * window?.innerWidth || 500,
-                  y: Math.random() * window?.innerHeight || 500,
+                  x: Math.random() * windowSize.width,
+                  y: Math.random() * windowSize.height,
                   opacity: Math.random() * 0.5 + 0.1
                 }}
                 animate={{
-                  x: Math.random() * window?.innerWidth || 500,
-                  y: Math.random() * window?.innerHeight || 500,
+                  x: Math.random() * windowSize.width,
+                  y: Math.random() * windowSize.height,
                   opacity: Math.random() * 0.5 + 0.1
                 }}
                 transition={{
@@ -276,15 +298,48 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <Link 
-                  href="/resume.pdf" 
-                  target="_blank" 
-                  download
-                  className="download-resume-btn"
-                >
-                  <FaDownload className="mr-2" />
-                  Download Resume
-                </Link>
+                <div className="relative">
+                  <Link 
+                    href="https://drive.google.com/file/d/1ktC8iFLBrkRw3tH3J12rPjM5XR6-uGth/view?usp=sharing" 
+                    target="_blank"
+                    className="download-resume-btn"
+                    onMouseEnter={() => setIsResumeHovered(true)}
+                    onMouseLeave={() => setIsResumeHovered(false)}
+                  >
+                    <FaDownload className="mr-2" />
+                    Download Resume
+                  </Link>
+                  
+                  <AnimatePresence>
+                    {isResumeHovered && (
+                      <motion.div 
+                        className="resume-preview"
+                        initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                        animate={{ opacity: 1, y: 0, scale: 1.9 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.8 }}
+                        transition={{ duration: 0.8 }}
+                      >
+                        <motion.div 
+                          className="resume-preview-inner"
+                          initial={{ rotateY: 30 }}
+                          animate={{ rotateY: 0, scale: 1.2 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <Image 
+                            src="/images/resume.png" 
+                            alt="Resume Preview" 
+                            width={550} 
+                            height={650} 
+                            className="rounded-md shadow-xl"
+                          />
+                          <div className="resume-preview-overlay">
+                            <span>Click to view full resume</span>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
               
               {/* Right Column - Bio */}
@@ -322,7 +377,7 @@ export default function Home() {
                     <div className="stat-icon">
                       <i className="fas fa-code"></i>
                     </div>
-                    <div className="stat-number">500+</div>
+                    <div className="stat-number">1000+</div>
                     <div className="stat-label">Problems Solved</div>
                   </div>
                   
@@ -339,7 +394,7 @@ export default function Home() {
                       <i className="fas fa-laptop-code"></i>
                     </div>
                     <div className="stat-number">3+</div>
-                    <div className="stat-label">Years Experience</div>
+                    <div className="stat-label">Years Coding Experience</div>
                   </div>
                 </div>
               </div>
