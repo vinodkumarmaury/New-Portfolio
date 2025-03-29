@@ -9,7 +9,7 @@ import { MapPin, Mail, Phone, Download } from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    name: "",
+    name: "", 
     email: "",
     message: "",
   });
