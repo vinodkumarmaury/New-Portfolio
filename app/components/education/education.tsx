@@ -7,43 +7,35 @@ import Image from "next/image";
 import { GraduationCap, Calendar, MapPin, Award, ChevronRight } from "lucide-react";
 
 export default function Education() {
-  const education = [ 
+  const education = [
     {
-      degree: "M.Tech Dual Degree (5Y) - Mining Engineering",
+      degree: "Dual Degree (B.Tech. + M.Tech.) - Mining Engineering",
       institution: "IIT Kharagpur",
       year: "2021 - 2026",
       location: "Kharagpur, West Bengal",
-      description: "Pursuing integrated dual degree in Mining Engineering with focus on mine automation, planning and design. Current CGPA: 8.56/10.",
+      description: "Pursuing integrated dual degree in Mining Engineering with focus on mine automation, planning and design. Current CGPA: 7.64/10.",
       logo: "/images/iit-kharagpur-logo.png",
-      achievements: [
-        "Dean's List for Academic Excellence",
-        "Department Rank 3"
-      ],
+      achievements: [],
       color: "#8C52FF"
     },
     {
       degree: "Class XII (UP Board)",
-      institution: "RamBahadur Singh Inter College Bahraich",
-      year: "2019 - 2021",
+      institution: "Ram Bahadur Singh Inter College Bahraich",
+      year: "2021",
       location: "Bahraich, Uttar Pradesh",
       description: "Completed higher secondary education with focus on Physics, Chemistry, and Mathematics. Achieved 70% marks.",
       logo: "/images/RBS.jpg",
-      achievements: [
-        "Science Exhibition Winner"
-      ],
+      achievements: [],
       color: "#1E90FF"
     },
     {
       degree: "Class X (CBSE)",
       institution: "Jawahar Navodaya Vidyalaya Kirtanpur Bahraich",
-      year: "2017 - 2019",
+      year: "2019",
       location: "Kirtanpur, Bahraich",
       description: "Completed secondary education with distinction. Scored 94.8% marks, developing strong foundation in mathematics and sciences.",
       logo: "/images/Jawahar_Navodaya_Vidyalaya_logo.png",
-      achievements: [
-        "School Topper",
-        "State Mathematics Olympiad Finalist"
-      ],
+      achievements: [],
       color: "#FF6B6B"
     }
   ];
@@ -216,24 +208,7 @@ export default function Education() {
                       </div>
                     )}
                     
-                    {/* Experience progress bar */}
-                    {index === 0 && (
-                      <div className="mt-6 pt-4 border-t border-border">
-                        <div className="flex justify-between mb-2 text-sm">
-                          <span className="font-medium">Program Progress</span>
-                          <span className="text-primary">60% Complete</span>
-                        </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <motion.div 
-                            className="h-full rounded-full"
-                            style={{ backgroundColor: edu.color }}
-                            initial={{ width: 0 }}
-                            animate={{ width: "60%" }}
-                            transition={{ delay: 0.5, duration: 1 }}
-                          />
-                        </div>
-                      </div>
-                    )}
+                    {/* Experience progress bar removed as requested */}
                   </div>
                 </div>
               </div>

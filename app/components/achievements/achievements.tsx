@@ -46,50 +46,42 @@ export default function Achievements() {
       date: "October 2024",
       icon: <Trophy className="h-8 w-8" />,
       color: "from-yellow-500 to-amber-600"
+    },
+    {
+      title: "HackerEarth Machine Learning Challenge | World Water Day",
+      position: "Top 2% (Rank 32/1600+)",
+      description: "Achieved a top 2% finish in a national ML hackathon focused on water conservation. Developed a predictive model for household water consumption using weather, temperature, and appliance usage data, delivering highly accurate forecasts for 6,000+ households.",
+      date: "April 2025",
+      icon: <Trophy className="h-8 w-8" />,
+      color: "from-blue-500 to-cyan-600"
     }
   ];
 
   const codingProfiles = [
     {
-      platform: "Coding Ninjas",
-      rating: "2439",
-      description: "Achieved a platform rating of 2439 after completing over 500 challenges across various difficulty levels.",
-      icon: <SiCodingninjas size={32} />,
-      link: "https://www.codingninjas.com/studio/profile/Vinod_IITKGP",
-      color: "from-orange-500 to-rose-600",
-      accent: "codingninjas", // Changed to CSS class identifier
-      stats: [
-        { label: "Problems Solved", value: "500+" },
-        { label: "Contest Rating", value: "2439" },
-        { label: "Global Rank", value: "Top 5%" }
-      ]
-    },
-    {
       platform: "Codeforces",
-      rating: "1179",
-      description: "Earned a platform rating of 1179, demonstrating problem-solving proficiency with 100+ solved problems.",
+      rating: "1224",
+      description: "Earned a platform rating of 1224, demonstrating problem-solving proficiency with 100+ solved problems.",
       icon: <SiCodeforces size={32} />,
       link: "https://codeforces.com/profile/vinod_kumar_maurya",
       color: "from-blue-500 to-indigo-600",
-      accent: "codeforces", // Changed to CSS class identifier
+      accent: "codeforces",
       stats: [
         { label: "Problems Solved", value: "100+" },
-        { label: "Contest Rating", value: "1179" },
-        { label: "Max Rating", value: "1204" }
+        { label: "Contest Rating", value: "1224" }
       ]
     },
     {
       platform: "LeetCode",
-      rating: "1633",
-      description: "Secured a platform rating of 1633 by solving 200+ algorithmic challenges and optimizing solutions.",
+      rating: "1688",
+      description: "Secured a platform rating of 1688 by solving 200+ algorithmic challenges and optimizing solutions.",
       icon: <SiLeetcode size={32} />,
       link: "https://leetcode.com/Vinod_Kumar_Maurya/",
       color: "from-yellow-500 to-orange-600",
-      accent: "leetcode", // Changed to CSS class identifier
+      accent: "leetcode",
       stats: [
         { label: "Problems Solved", value: "200+" },
-        { label: "Contest Rating", value: "1633" },
-        { label: "Acceptance Rate", value: "65%" }
+        { label: "Contest Rating", value: "1688" }
       ]
     },
     {
@@ -151,6 +143,11 @@ export default function Achievements() {
 
   return (
     <section id="achievements" className="py-24 bg-gradient-to-b from-secondary/30 to-background/80 relative overflow-hidden">
+      <div className="mb-8 text-center">
+        <a href="https://drive.google.com/file/d/14qYz_xVT0JuK3C31zInVfXUzUG33yIz4/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 bg-primary text-white rounded-full font-semibold hover:bg-primary/80 transition">
+          View My Resume
+        </a>
+      </div>
       {/* Animated background pattern */}
       <div className="achievements-background-pattern absolute inset-0 opacity-5"></div>
       

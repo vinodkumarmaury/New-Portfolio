@@ -9,34 +9,44 @@ import { Briefcase, Calendar, MapPin, Rocket, Monitor } from "lucide-react";
 export default function Experience() {
   const experiences = [
     {
-      title: "Full-Stack Developer Intern",
-      company: "Delishia Analytics",
-      location: "Remote",
-      period: "Feb 2025 - Present",
-      description: "Analyzing social media trends to assess public sentiment related to political parties. Providing data-driven recommendations to optimize campaign strategies and enhance voter outreach. Assisting in the collection and interpretation of electoral data and contributing to the development of AI-powered data analytics tools.",
-      skills: ["Web Development", "NextJS", "Tailwind", "TypeScript", "Data Analysis", "AI", "Social Media Analytics", "Political Research"],
-      logo: "/images/delishia-logo.png",
-      color: "#3B82F6" // Blue color scheme
+      title: "SDE Intern",
+      company: "ClaimBuddy",
+      location: "Gurugram",
+      period: "May 2025 - July 2025",
+      description: "Built Django CSV/Excel importers for transaction data with automated validation and deduplication, reducing errors by 30%. Integrated SMTP for real-time email notifications, extended hospital model and APIs, developed regex OCR parsers and Next.js endpoints, and built Superset dashboards for live reporting.",
+      skills: ["Django", "Next.js", "Prisma", "MySQL", "Superset", "SMTP", "API Development", "Data Validation", "OCR"],
+      logo: "/images/Blasting.png",
+      color: "#FF7A59"
     },
     {
-      title: "Underground Mine Development Intern",
-      company: "Central Mine Planning & Design Institute, Coal India Limited",
-      location: "Ranchi",
-      period: "May 2024 - June 2024",
-      description: "Analyzed geological reports and site conditions to identify optimal mining methods. Investigated borehole lithologs and mineralization patterns. Designed a comprehensive mine extraction plan using AutoCAD and MINEX software. Conducted ventilation analysis with VentSIM.",
-      skills: ["AutoCAD", "MINEX", "VentSIM", "Mine Planning", "Geological Analysis"],
-      logo: "/images/cmpdi.jpg",
-      color: "#10B981" // Green color scheme
+      title: "SDE Intern",
+      company: "Delishia Analytics",
+      location: "Remote",
+      period: "Feb 2025 - Apr 2025",
+      description: "Built real-time political dashboard using React.js and Tailwind CSS, mapped Bihar districts via Google Maps API, analyzed social media/YouTube trends, and contributed to AI tools for predictive voter turnout models.",
+      skills: ["React.js", "Tailwind CSS", "Google Maps API", "AI", "Data Visualization", "Social Media Analytics"],
+      logo: "/images/delishia-logo.png",
+      color: "#3B82F6"
+    },
+    {
+      title: "B.Tech Project: Rock Mass Blasting Prediction System",
+      company: "IIT Kharagpur",
+      location: "Kharagpur",
+      period: "Aug 2024 - Apr 2025",
+      description: "Built scalable full-stack website (FastAPI, Next.js, Tailwind CSS) for blast prediction, integrated empirical formula and cost calculator, added secure login, role-based editing, and Excel/CSV export, and engineered regression models (SVR, RF, XGBoost) achieving R² 0.85.",
+      skills: ["FastAPI", "Next.js", "Tailwind CSS", "MongoDB", "Machine Learning", "Regression", "Authentication"],
+      logo: "/images/Blasting.png",
+      color: "#8C52FF"
     },
     {
       title: "Tech Team Member",
       company: "Technology Mining Engineering Society",
       location: "IIT Kharagpur",
-      period: "Sep 2022 - Jan 2023",
-      description: "Collaborated with the team to design and create visually appealing, user-friendly websites. Assisted in troubleshooting and resolving website bugs. Proactively implemented new features and improvements to enhance user experience.",
-      skills: ["Web Development", "UI/UX", "Troubleshooting", "Team Collaboration"],
+      period: "Aug 2023 - Apr 2024",
+      description: "Contributed to a full-stack event-hosting platform, implemented UI/UX enhancements, resolved critical UI bugs, and optimized React.js components for faster load times.",
+      skills: ["React.js", "UI/UX", "Bug Fixing", "Performance Optimization", "Team Collaboration"],
       logo: "/images/TMES.jpeg",
-      color: "#8B5CF6" // Purple color scheme
+      color: "#8B5CF6"
     }
   ];
 

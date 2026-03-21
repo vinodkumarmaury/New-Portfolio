@@ -22,6 +22,26 @@ export default function Projects() {
       supervisor: "Prof. Kaushik Dey | Mining Department IIT Kharagpur"
     },
     {
+      title: "TaskTrek (TaskFlow) - Full-Stack Task Management",
+      description: "Built and deployed TaskTrek, a full-stack task management and collaboration platform with drag-and-drop Kanban, list view, advanced filters, file attachments, JWT auth, email verification, and RBAC.",
+      image: "/images/tasktrek.svg",
+      github: "https://github.com/vinodkumarmaury/TaskTrek",
+      demo: "https://task-trek-web.vercel.app/",
+      tech: ["Next.js", "Express", "TypeScript", "MongoDB", "Cloudinary", "SMTP"],
+      date: "July 2025 - Aug 2025",
+      supervisor: "Self Project"
+    },
+    {
+      title: "Resume Analyzer and Career AI Platform",
+      description: "Engineered a full-stack AI career platform (Django + React) integrating Google Gemini for resume generation and NLP-based resume/skills analysis. Implemented JWT auth, file upload workflows and interactive dashboards for personalized career guidance.",
+      image: "/images/resume-analyzer.svg",
+      github: "https://github.com/vinodkumarmaury/Resume-Analyzer-Backend",
+      demo: "https://resume-analyzer-nine-khaki.vercel.app/",
+      tech: ["Django", "React", "NLP", "Google Gemini API", "JWT"],
+      date: "July 2025 - Sep 2025",
+      supervisor: "Self Project"
+    },
+    {
       title: "School Management System",
       description: "Engineered a robust and scalable system with ReactJS for seamless user interactions, increasing management efficiency by 30%. Integrated MongoDB and Express.JS frameworks for secure user authentication, enabling safe and efficient data handling processes. Implemented comprehensive grade tracking and attendance monitoring features, significantly reducing administrative workload by 15%.",
       image: "/images/school.png",
