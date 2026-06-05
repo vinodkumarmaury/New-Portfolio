@@ -380,7 +380,7 @@ export default function Contact() {
                     </motion.div>
                     <div>
                       <h4 className="font-medium mb-1">Location</h4>
-                      <span className="text-muted-foreground">Bahraich, Uttar Pradesh, India-271902</span>
+                      <span className="text-muted-foreground">Greater Lucknow Area, India</span>
                     </div>
                   </div>
                 </motion.div>

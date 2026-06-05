@@ -9,6 +9,26 @@ import { Briefcase, Calendar, MapPin, Rocket, Monitor } from "lucide-react";
 export default function Experience() {
   const experiences = [
     {
+      title: "Software Engineer",
+      company: "Machani Group",
+      location: "Bengaluru",
+      period: "May 2026 - Present",
+      description: "Working on scalable software solutions and backend services. Building production-ready features, improving system reliability, and collaborating with cross-functional teams to deliver business value.",
+      skills: ["Node.js", "Express", "TypeScript", "APIs", "Performance Optimization"],
+      logo: "/images/machani.png",
+      color: "#06B6D4"
+    },
+    {
+      title: "Software Engineer",
+      company: "Enerzyflow India",
+      location: "Kolkata",
+      period: "August 2025 - March 2026",
+      description: "Designed and developed scalable backend services and REST APIs for processing energy consumption data, built interactive frontend dashboards with React/Next.js, applied ML for consumption analysis and forecasting, and optimized full-stack performance for improved UX.",
+      skills: ["Node.js", "Next.js", "React", "Machine Learning", "API Design"],
+      logo: "/images/enerzyflow.png",
+      color: "#10B981"
+    },
+    {
       title: "SDE Intern",
       company: "ClaimBuddy",
       location: "Gurugram",

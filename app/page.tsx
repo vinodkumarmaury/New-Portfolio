@@ -183,7 +183,7 @@ export default function Home() {
                   </Link>
                 </motion.li>
                 <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://twitter.com/its_vinod_kr" target="_blank" rel="noreferrer">
+                  <Link href="https://x.com/its_vinod_kr" target="_blank" rel="noreferrer">
                     <i className="fa-brands fa-twitter"></i>
                   </Link>
                 </motion.li>
@@ -193,7 +193,7 @@ export default function Home() {
                   </Link>
                 </motion.li>
                 <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://www.instagram.com/im_vinod_maurya/" target="_blank" rel="noreferrer">
+                  <Link href="https://www.instagram.com/vinodmaurya0410/" target="_blank" rel="noreferrer">
                     <i className="fa-brands fa-instagram"></i>
                   </Link>
                 </motion.li>
@@ -351,23 +351,24 @@ export default function Home() {
                   </h3>
                   
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
-                    <p>
-                      I am a passionate Full Stack Developer with expertise in building modern web applications.
-                      With a strong foundation in both frontend and backend technologies, I create efficient,
-                      scalable, and user-friendly solutions that solve real-world problems.
-                    </p>
-                    
-                    <p>
-                      My journey in software development began with a fascination for creating interactive web experiences.
-                      Over the years, I&apos;ve honed my skills across the entire development stack, from designing intuitive user
-                      interfaces to architecting robust backend systems.
-                    </p>
-                    
-                    <p>
-                      I enjoy tackling complex challenges and continuously learning new technologies to stay at the
-                      forefront of web development. When I&apos;m not coding, you can find me solving algorithmic problems
-                      on platforms like LeetCode and CodeChef.
-                    </p>
+                      <p>
+                        Pursuing an integrated B.Tech.+M.Tech. degree in Mining Engineering at IIT Kharagpur, I have built
+                        a strong engineering foundation while actively exploring software development. My passion for web
+                        technologies led to hands-on experience as a Full Stack Developer at ClaimBuddy, where I contributed
+                        to Django modules, API integrations, and automation to improve operational efficiency.
+                      </p>
+
+                      <p>
+                        I work with technologies like Node.js, Express.js, MongoDB, Django, React, and Next.js to deliver
+                        scalable and user-friendly software. My experience includes building dashboards, designing
+                        backend services, applying ML for data analysis, and optimizing full-stack performance.
+                      </p>
+
+                      <p>
+                        I am committed to solving real-world challenges through efficient software solutions and continuous
+                        learning. Outside development, I enjoy research, competitive programming, and contributing to
+                        production-ready systems that create measurable impact.
+                      </p>
                   </div>
                 </div>
                 
