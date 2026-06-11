@@ -19,13 +19,9 @@ export default function GameCursor() {
     let mx = W / 2, my = H / 2;
     let prevX = mx, prevY = my;
     let lerpX = mx, lerpY = my;
-    let velX = 0, velY = 0;
 
-    interface TrailPoint { x: number; y: number; t: number; spd: number; }
-    const trail: TrailPoint[] = [];
-    const TRAIL_LIFE = 2000;
+    type PType = "move" | "burst" | "spark" | "ring" | "glow" | "orbit";
 
-    type PType = "burst" | "spark" | "ring" | "glow";
     interface Particle {
       x: number; y: number;
       vx: number; vy: number;
@@ -34,53 +30,89 @@ export default function GameCursor() {
       r: number; g: number; b: number;
       type: PType;
       curR?: number; maxR?: number;
+      angle?: number; angleSpeed?: number; dist?: number;
     }
+
     const particles: Particle[] = [];
 
+    // Orbit satellites that circle the cursor
+    const ORBIT_COUNT = 6;
+    const orbits: { angle: number; dist: number; speed: number; size: number; phase: number }[] = Array.from(
+      { length: ORBIT_COUNT },
+      (_, i) => ({
+        angle: (i / ORBIT_COUNT) * Math.PI * 2,
+        dist: 22 + Math.random() * 8,
+        speed: 0.025 + Math.random() * 0.02,
+        size: 1.2 + Math.random() * 1.2,
+        phase: Math.random() * Math.PI * 2,
+      })
+    );
+
+    function spawnMoveSparks(x: number, y: number, spd: number) {
+      const count = Math.floor(spd * 0.4 + 1);
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const vel = 0.8 + Math.random() * 2.5;
+        const isCyan = Math.random() > 0.35;
+        particles.push({
+          x: x + (Math.random() - 0.5) * 6,
+          y: y + (Math.random() - 0.5) * 6,
+          vx: Math.cos(angle) * vel,
+          vy: Math.sin(angle) * vel - 0.5,
+          life: 0.7 + Math.random() * 0.3,
+          decay: 0.035 + Math.random() * 0.02,
+          size: 1 + Math.random() * 2,
+          r: isCyan ? 0 : 168,
+          g: isCyan ? 229 : 85,
+          b: 255,
+          type: "move",
+        });
+      }
+    }
+
     function spawnBurst(x: number, y: number) {
-      // 3 expanding shock rings
+      // Shockwave rings
       const rings = [
         { r: 0, g: 229, b: 255, maxR: 55, size: 2.5 },
-        { r: 168, g: 85, b: 247, maxR: 85, size: 1.8 },
-        { r: 255, g: 255, b: 255, maxR: 115, size: 1.2 },
+        { r: 168, g: 85, b: 247, maxR: 88, size: 1.8 },
+        { r: 255, g: 255, b: 255, maxR: 120, size: 1.2 },
       ];
       rings.forEach(({ r, g, b, maxR, size }) => {
-        particles.push({ x, y, vx: 0, vy: 0, life: 1, decay: 0.018, size, r, g, b, type: "ring", curR: 2, maxR });
+        particles.push({ x, y, vx: 0, vy: 0, life: 1, decay: 0.017, size, r, g, b, type: "ring", curR: 2, maxR });
       });
 
       // Glow flash
-      particles.push({ x, y, vx: 0, vy: 0, life: 1, decay: 0.09, size: 35, r: 0, g: 229, b: 255, type: "glow" });
+      particles.push({ x, y, vx: 0, vy: 0, life: 1, decay: 0.08, size: 40, r: 0, g: 229, b: 255, type: "glow" });
 
       // Radial burst
-      for (let i = 0; i < 28; i++) {
-        const angle = (i / 28) * Math.PI * 2 + Math.random() * 0.2;
-        const spd = 2.5 + Math.random() * 9;
-        const col = i % 3 === 0
-          ? { r: 251, g: 191, b: 36 }
-          : i % 2 === 0
-          ? { r: 0, g: 229, b: 255 }
+      for (let i = 0; i < 30; i++) {
+        const angle = (i / 30) * Math.PI * 2 + Math.random() * 0.15;
+        const spd = 2 + Math.random() * 9;
+        const col =
+          i % 3 === 0 ? { r: 251, g: 191, b: 36 }
+          : i % 2 === 0 ? { r: 0, g: 229, b: 255 }
           : { r: 168, g: 85, b: 247 };
         particles.push({
           x, y,
           vx: Math.cos(angle) * spd,
           vy: Math.sin(angle) * spd,
-          life: 1, decay: 0.022,
+          life: 1, decay: 0.02,
           size: 2 + Math.random() * 3.5,
           r: col.r, g: col.g, b: col.b,
           type: "burst",
         });
       }
 
-      // Sparks
-      for (let i = 0; i < 18; i++) {
+      // White sparks
+      for (let i = 0; i < 20; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const spd = 6 + Math.random() * 16;
+        const spd = 5 + Math.random() * 16;
         particles.push({
           x, y,
           vx: Math.cos(angle) * spd,
           vy: Math.sin(angle) * spd,
-          life: 0.7 + Math.random() * 0.3,
-          decay: 0.042,
+          life: 0.6 + Math.random() * 0.4,
+          decay: 0.04,
           size: 0.9,
           r: 255, g: 255, b: 255,
           type: "spark",
@@ -97,20 +129,19 @@ export default function GameCursor() {
     outerRing.className = "gc-ring";
     document.body.appendChild(outerRing);
 
-    const crossH = document.createElement("div");
-    crossH.className = "gc-cross-h";
-    document.body.appendChild(crossH);
-
-    const crossV = document.createElement("div");
-    crossV.className = "gc-cross-v";
-    document.body.appendChild(crossV);
+    let moveSpeed = 0;
+    let idleTime = 0;
 
     const onMove = (e: MouseEvent) => {
       prevX = mx; prevY = my;
       mx = e.clientX; my = e.clientY;
-      velX = mx - prevX; velY = my - prevY;
-      const spd = Math.sqrt(velX * velX + velY * velY);
-      trail.push({ x: mx, y: my, t: Date.now(), spd });
+      const dx = mx - prevX, dy = my - prevY;
+      moveSpeed = Math.sqrt(dx * dx + dy * dy);
+      idleTime = 0;
+
+      if (moveSpeed > 2) {
+        spawnMoveSparks(mx, my, moveSpeed);
+      }
     };
 
     const onClick = (e: MouseEvent) => {
@@ -126,83 +157,68 @@ export default function GameCursor() {
       canvas.width = W; canvas.height = H;
     });
 
+    document.documentElement.style.cursor = "none";
     document.body.style.cursor = "none";
 
     let prevT = performance.now();
     let raf: number;
+    let frame = 0;
 
     function render(now: number) {
       const dt = Math.min((now - prevT) / 16, 3.5);
       prevT = now;
+      frame++;
 
       ctx.clearRect(0, 0, W, H);
 
-      lerpX += (mx - lerpX) * 0.16 * dt;
-      lerpY += (my - lerpY) * 0.16 * dt;
+      // Lerp cursor follower
+      lerpX += (mx - lerpX) * 0.14 * dt;
+      lerpY += (my - lerpY) * 0.14 * dt;
+      idleTime += dt;
 
-      // ---- TRAIL ----
-      const curT = Date.now();
-      while (trail.length && curT - trail[0].t > TRAIL_LIFE) trail.shift();
+      // ---- ORBIT SATELLITES ----
+      const idlePulse = Math.sin(now * 0.002) * 0.5 + 0.5;
+      orbits.forEach((o, i) => {
+        // Orbit faster when moving, slower when idle
+        const speedMult = idleTime < 5 ? 1.5 : 0.6;
+        o.angle += o.speed * dt * speedMult;
 
-      if (trail.length > 1) {
-        // Draw glowing line
-        for (let i = 1; i < trail.length; i++) {
-          const p0 = trail[i - 1];
-          const p1 = trail[i];
-          const a0 = Math.max(0, 1 - (curT - p0.t) / TRAIL_LIFE);
-          const a1 = Math.max(0, 1 - (curT - p1.t) / TRAIL_LIFE);
-          if (a0 + a1 < 0.04) continue;
+        // Distance stretches when moving (elliptical orbit)
+        const stretch = idleTime < 5 ? 1 + moveSpeed * 0.04 : 1;
+        const ox = lerpX + Math.cos(o.angle) * o.dist * stretch;
+        const oy = lerpY + Math.sin(o.angle) * o.dist;
 
-          const isFast = p1.spd > 14;
-          const r = isFast ? 168 : 0;
-          const g = isFast ? 85 : 229;
-          const b = 255;
+        const brightness = 0.5 + Math.sin(now * 0.003 + o.phase) * 0.3;
+        const isCyan = i % 2 === 0;
 
-          const grad = ctx.createLinearGradient(p0.x, p0.y, p1.x, p1.y);
-          grad.addColorStop(0, `rgba(${r},${g},${b},${a0 * 0.55})`);
-          grad.addColorStop(1, `rgba(0,229,255,${a1 * 0.85})`);
+        // Draw satellite dot with glow
+        const rg = ctx.createRadialGradient(ox, oy, 0, ox, oy, o.size * 2.5);
+        rg.addColorStop(0, isCyan ? `rgba(0,229,255,${brightness})` : `rgba(168,85,247,${brightness})`);
+        rg.addColorStop(1, "rgba(0,0,0,0)");
 
-          ctx.beginPath();
-          ctx.moveTo(p0.x, p0.y);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = Math.max(0.8, a1 * 3.2);
-          ctx.lineCap = "round";
-          ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(ox, oy, o.size * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = rg;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(ox, oy, o.size, 0, Math.PI * 2);
+        ctx.fillStyle = isCyan ? `rgba(0,229,255,${brightness * 0.95})` : `rgba(168,85,247,${brightness * 0.95})`;
+        ctx.fill();
+
+        // Connect to cursor with faint line when idle
+        if (idleTime > 8) {
+          const lineA = Math.max(0, (1 - (idleTime - 8) / 20)) * 0.12;
+          if (lineA > 0.01) {
+            ctx.beginPath();
+            ctx.moveTo(lerpX, lerpY);
+            ctx.lineTo(ox, oy);
+            ctx.strokeStyle = isCyan ? `rgba(0,229,255,${lineA})` : `rgba(168,85,247,${lineA})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
         }
-
-        // Trail energy dots — visible when cursor has stopped (path persistence)
-        for (let i = 0; i < trail.length; i++) {
-          const p = trail[i];
-          const age = 1 - (curT - p.t) / TRAIL_LIFE;
-          if (age < 0.04) continue;
-          const dA = age * 0.55;
-          const dR = Math.max(0.5, age * 2.2);
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, dR, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(0,229,255,${dA})`;
-          ctx.fill();
-        }
-
-        // Soft glow behind newest trail segment
-        const recent = trail.slice(Math.max(0, trail.length - 15));
-        if (recent.length > 1) {
-          ctx.save();
-          ctx.globalAlpha = 0.18;
-          ctx.filter = "blur(6px)";
-          ctx.beginPath();
-          ctx.moveTo(recent[0].x, recent[0].y);
-          recent.forEach(p => ctx.lineTo(p.x, p.y));
-          ctx.strokeStyle = "rgba(0,229,255,1)";
-          ctx.lineWidth = 6;
-          ctx.lineCap = "round";
-          ctx.stroke();
-          ctx.filter = "none";
-          ctx.globalAlpha = 1;
-          ctx.restore();
-        }
-      }
+      });
 
       // ---- PARTICLES ----
       for (let i = particles.length - 1; i >= 0; i--) {
@@ -223,7 +239,7 @@ export default function GameCursor() {
         if (p.type === "glow") {
           const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * p.life * 3.5);
           rg.addColorStop(0, `rgba(${p.r},${p.g},${p.b},${p.life * 0.5})`);
-          rg.addColorStop(0.4, `rgba(${p.r},${p.g},${p.b},${p.life * 0.15})`);
+          rg.addColorStop(0.5, `rgba(${p.r},${p.g},${p.b},${p.life * 0.15})`);
           rg.addColorStop(1, `rgba(${p.r},${p.g},${p.b},0)`);
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * p.life * 3.5, 0, Math.PI * 2);
@@ -236,29 +252,30 @@ export default function GameCursor() {
         p.y += p.vy * dt;
 
         if (p.type === "burst") {
-          p.vy += 0.14 * dt;
+          p.vy += 0.13 * dt;
           p.vx *= Math.pow(0.965, dt);
           p.vy *= Math.pow(0.965, dt);
-        } else {
+        } else if (p.type === "spark") {
           p.vx *= Math.pow(0.91, dt);
           p.vy *= Math.pow(0.91, dt);
+        } else {
+          // move sparks float upward slightly
+          p.vy -= 0.03 * dt;
+          p.vx *= Math.pow(0.96, dt);
+          p.vy *= Math.pow(0.96, dt);
         }
 
-        const sz = p.type === "spark" ? p.size : Math.max(0.3, p.size * p.life);
+        const sz = p.type === "spark" ? p.size : Math.max(0.3, p.size * Math.sqrt(p.life));
         ctx.beginPath();
         ctx.arc(p.x, p.y, sz, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.life * 0.92})`;
+        ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.life * 0.9})`;
         ctx.fill();
       }
 
-      // ---- CURSOR DOM ----
-      const spd = Math.sqrt(velX * velX + velY * velY);
-      const ringScale = Math.max(0.65, 1.15 - spd * 0.018);
-
+      // ---- CURSOR DOM UPDATE ----
+      const ringScale = Math.max(0.7, 1.2 - moveSpeed * 0.015);
       dot.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
       outerRing.style.transform = `translate(${lerpX - 22}px, ${lerpY - 22}px) scale(${ringScale})`;
-      crossH.style.transform = `translate(${lerpX - 18}px, ${lerpY - 1}px)`;
-      crossV.style.transform = `translate(${lerpX - 1}px, ${lerpY - 18}px)`;
 
       raf = requestAnimationFrame(render);
     }
@@ -269,8 +286,9 @@ export default function GameCursor() {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("click", onClick);
+      document.documentElement.style.cursor = "";
       document.body.style.cursor = "";
-      [dot, outerRing, crossH, crossV].forEach(el => el.remove());
+      [dot, outerRing].forEach(el => el.remove());
     };
   }, []);
 

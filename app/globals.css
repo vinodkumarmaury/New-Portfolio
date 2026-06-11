@@ -1480,6 +1480,14 @@ body::after {
    GAMING OS — CURSOR SYSTEM
    ═══════════════════════════════════════════════ */
 
+/* Hide the system cursor everywhere — custom canvas cursor takes over */
+html,
+html *,
+html *::before,
+html *::after {
+  cursor: none !important;
+}
+
 .gc-dot {
   position: fixed;
   width: 12px;
@@ -1525,25 +1533,6 @@ body::after {
   100% { transform: translate(var(--tx,0), var(--ty,0)) scale(1); opacity: 1; }
 }
 
-.gc-cross-h {
-  position: fixed;
-  width: 36px;
-  height: 2px;
-  pointer-events: none;
-  z-index: 99997;
-  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.6), transparent);
-  will-change: transform;
-}
-
-.gc-cross-v {
-  position: fixed;
-  width: 2px;
-  height: 36px;
-  pointer-events: none;
-  z-index: 99997;
-  background: linear-gradient(180deg, transparent, rgba(0,229,255,0.6), transparent);
-  will-change: transform;
-}
 
 /* ═══════════════════════════════════════════════
    GAMING OS — BACKGROUND & GRID UPGRADES
