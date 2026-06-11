@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { SiCodechef, SiCodeforces, SiLeetcode, SiGmail, SiCodingninjas } from "react-icons/si";
 import { FaPhoneAlt, FaDownload } from "react-icons/fa";
 import Typewriter from "typewriter-effect";
+import CursorEffect from "@/components/cursor/CursorEffect";
+import CursorEffects from "@/components/cursor/CursorEffects";
 import Navbar from "@/app/components/navbar/navbar";
 import Footer from "@/app/components/footer/footer";
 import Skills from "@/app/components/skills/skills";
@@ -70,11 +72,19 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-background"> 
-        {/* Hero Section with improved animations */}
-        <section className="relative h-screen flex items-center justify-center bg-gradient-to-b from-background to-secondary overflow-hidden">
-          {/* Animated background elements */}
+      <main className="min-h-screen bg-background relative overflow-hidden game-shell">
+        <div className="bg-blob w-[34rem] h-[34rem] top-[-8rem] left-[-10rem] opacity-60"></div>
+        <div className="bg-blob w-[38rem] h-[38rem] top-[28%] right-[-14rem] opacity-50" style={{ animationDelay: '-5s' }}></div>
+        <div className="bg-blob w-80 h-80 bottom-[14%] left-[18%] opacity-30" style={{ animationDelay: '-2s' }}></div>
+        <div className="bg-blob w-64 h-64 bottom-0 right-[12%] opacity-20" style={{ animationDelay: '-7s' }}></div>
+
+          <CursorEffects />
+
+        <section className="relative min-h-[55vh] flex items-start justify-center overflow-hidden pt-6 pb-10 md:pt-8">
           <div className="hero-particles-container">
+            <div className="hero-grid-line" />
+            <div className="hero-beam top-[-10%] left-[-8%]" />
+            <div className="hero-beam bottom-[-14%] right-[-10%]" style={{ animationDelay: '-4s' }} />
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
@@ -110,8 +120,10 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                whileHover={{ scale: 1.05, rotate: 5 }}
+                whileHover={{ scale: 1.08, rotate: -2, y: -6 }}
               >
+                <div className="hero-ring" />
+                <div className="hero-ring secondary" />
                 <Image 
                   src="/images/profile.jpg" 
                   alt="Vinod Kumar Maurya" 
@@ -162,6 +174,29 @@ export default function Home() {
                   </h3> 
                 </motion.div>
               </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="hero-panel"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 1.1 }}
+            >
+              <div className="glass-panel panel-border hover:translate-y-[-4px] hover:border-cyan-300/30 transition-transform duration-300">
+                <div className="hud-title">Status</div>
+                <div className="hud-value">Full Stack Player</div>
+                <p className="hud-caption">Building production systems with fast interactions and polished visuals.</p>
+              </div>
+              <div className="glass-panel panel-border hover:translate-y-[-4px] hover:border-fuchsia-300/30 transition-transform duration-300">
+                <div className="hud-title">Loadout</div>
+                <div className="hud-value">Next.js + Motion</div>
+                <p className="hud-caption">Neon interfaces, clean architecture, and responsive UI systems.</p>
+              </div>
+              <div className="glass-panel panel-border hover:translate-y-[-4px] hover:border-emerald-300/30 transition-transform duration-300">
+                <div className="hud-title">Mission</div>
+                <div className="hud-value">High Impact Builds</div>
+                <p className="hud-caption">Turning ideas into interactive web experiences with a gaming-inspired edge.</p>
+              </div>
             </motion.div>
 
             <motion.div 

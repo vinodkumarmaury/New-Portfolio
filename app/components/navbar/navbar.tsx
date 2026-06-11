@@ -48,7 +48,7 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur-sm shadow-md" : "bg-transparent"
+        isScrolled ? "bg-background/70 backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.35)] border-b border-white/10" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -57,7 +57,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-cyan-300 via-white to-fuchsia-400 bg-clip-text text-transparent uppercase tracking-[0.25em]">
               Vinod Kumar
             </Link>
           </motion.div>
@@ -75,9 +75,9 @@ export default function Navbar() {
                   className={`relative px-3 py-2 rounded-md ${
                     activeSection === item.href.replace('#', '') || 
                     (activeSection === 'home' && item.href === '#') 
-                      ? "text-primary font-medium" 
+                      ? "text-cyan-300 font-medium" 
                       : "text-foreground/70 hover:text-foreground"
-                  } transition-colors`}
+                  } transition-all duration-300 hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-[0_0_18px_rgba(0,229,255,0.12)]`}
                 >
                   {item.name}
                   {(activeSection === item.href.replace('#', '') || 
@@ -102,7 +102,7 @@ export default function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden border border-white/10 bg-white/5 backdrop-blur-xl"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -114,7 +114,7 @@ export default function Navbar() {
         <AnimatePresence>
           {isOpen && (
             <motion.div 
-              className="md:hidden bg-background/95 backdrop-blur-sm rounded-b-lg shadow-lg overflow-hidden"
+              className="md:hidden glass-card rounded-b-2xl shadow-lg overflow-hidden"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -135,7 +135,7 @@ export default function Navbar() {
                         (activeSection === 'home' && item.href === '#') 
                           ? "text-primary bg-primary/5" 
                           : "text-foreground/70 hover:text-primary hover:bg-primary/5"
-                      } transition-all duration-200`}
+                      } transition-all duration-200 hover:translate-x-1`}
                       onClick={() => setIsOpen(false)}
                     >
                       {item.name}

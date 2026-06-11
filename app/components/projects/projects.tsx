@@ -128,10 +128,10 @@ export default function Projects() {
             <motion.div 
               key={index}
               variants={projectVariants}
-              whileHover={{ y: -10 }}
-              transition={{ duration: 0.3 }}
+              whileHover={{ y: -12, scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
             >
-              <Card className="h-full project-card">
+              <Card className="h-full project-card neon-border glass-card hover:shadow-[0_28px_90px_-32px_rgba(0,229,255,0.22)] transition-all duration-300">
                 <div className="relative h-64">
                   <Image
                     src={project.image}
@@ -171,12 +171,12 @@ export default function Projects() {
                   </div>
                   
                   <div className="flex gap-4 pt-4">
-                    <Button size="sm" variant="outline" asChild>
+                    <Button size="sm" variant="outline" asChild className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(0,229,255,0.22)]">
                       <Link href={project.github} target="_blank" rel="noopener noreferrer">
                         <Github className="mr-2 h-4 w-4" /> Code
                       </Link>
                     </Button>
-                    <Button size="sm" asChild>
+                    <Button size="sm" asChild className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(168,85,247,0.22)]">
                       <Link href={project.demo} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
                       </Link>
