@@ -8,8 +8,8 @@ import { Card } from "@/components/ui/card";
 import { SiCodechef, SiCodeforces, SiLeetcode, SiGmail, SiCodingninjas } from "react-icons/si";
 import { FaPhoneAlt, FaDownload } from "react-icons/fa";
 import Typewriter from "typewriter-effect";
-import CursorEffect from "@/components/cursor/CursorEffect";
-import CursorEffects from "@/components/cursor/CursorEffects";
+import GameCursor from "@/components/cursor/GameCursor";
+import GamingBackground from "@/components/background/GamingBackground";
 import Navbar from "@/app/components/navbar/navbar";
 import Footer from "@/app/components/footer/footer";
 import Skills from "@/app/components/skills/skills";
@@ -78,7 +78,8 @@ export default function Home() {
         <div className="bg-blob w-80 h-80 bottom-[14%] left-[18%] opacity-30" style={{ animationDelay: '-2s' }}></div>
         <div className="bg-blob w-64 h-64 bottom-0 right-[12%] opacity-20" style={{ animationDelay: '-7s' }}></div>
 
-          <CursorEffects />
+          <GameCursor />
+          <GamingBackground />
 
         <section className="relative flex items-start justify-center overflow-hidden pt-24 pb-14 md:pt-28">
           <div className="hero-particles-container">
@@ -182,17 +183,17 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 1.1 }}
             >
-              <div className="glass-panel panel-border hover:translate-y-[-4px] hover:border-cyan-300/30 transition-transform duration-300">
+              <div className="glass-panel panel-border hud-corners hover:translate-y-[-4px] hover:border-cyan-300/30 transition-transform duration-300 neon-border-animated os-window">
                 <div className="hud-title">Status</div>
                 <div className="hud-value">Full Stack Player</div>
                 <p className="hud-caption">Building production systems with fast interactions and polished visuals.</p>
               </div>
-              <div className="glass-panel panel-border hover:translate-y-[-4px] hover:border-fuchsia-300/30 transition-transform duration-300">
+              <div className="glass-panel panel-border hud-corners hover:translate-y-[-4px] hover:border-fuchsia-300/30 transition-transform duration-300 neon-border-animated os-window">
                 <div className="hud-title">Loadout</div>
                 <div className="hud-value">Next.js + Motion</div>
                 <p className="hud-caption">Neon interfaces, clean architecture, and responsive UI systems.</p>
               </div>
-              <div className="glass-panel panel-border hover:translate-y-[-4px] hover:border-emerald-300/30 transition-transform duration-300">
+              <div className="glass-panel panel-border hud-corners hover:translate-y-[-4px] hover:border-emerald-300/30 transition-transform duration-300 neon-border-animated os-window">
                 <div className="hud-title">Mission</div>
                 <div className="hud-value">High Impact Builds</div>
                 <p className="hud-caption">Turning ideas into interactive web experiences with a gaming-inspired edge.</p>
@@ -283,7 +284,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 max-w-6xl mx-auto">
               {/* Left Column - Personal Details */}
               <div className="md:col-span-4 space-y-6">
-                <div className="bg-card rounded-lg shadow-lg overflow-hidden border border-border/40">
+                <div className="bg-card rounded-lg shadow-lg overflow-hidden border border-border/40 hud-corners os-window">
                   <div className="bg-gradient-to-r from-primary/10 to-secondary p-6 relative">
                     <div className="about-card-pattern"></div>
                     <h3 className="text-xl font-semibold mb-3">
@@ -379,7 +380,7 @@ export default function Home() {
               
               {/* Right Column - Bio */}
               <div className="md:col-span-8 space-y-6">
-                <div className="bg-card rounded-lg shadow-lg p-6 border border-border/40 bio-card">
+                <div className="bg-card rounded-lg shadow-lg p-6 border border-border/40 bio-card hud-corners os-window">
                   <h3 className="text-xl font-semibold mb-6 flex items-center">
                     <i className="fas fa-user-graduate mr-3 text-primary"></i>
                     Biography
