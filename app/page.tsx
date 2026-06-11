@@ -80,7 +80,7 @@ export default function Home() {
 
           <CursorEffects />
 
-        <section className="relative min-h-[55vh] flex items-start justify-center overflow-hidden pt-6 pb-10 md:pt-8">
+        <section className="relative flex items-start justify-center overflow-hidden pt-24 pb-14 md:pt-28">
           <div className="hero-particles-container">
             <div className="hero-grid-line" />
             <div className="hero-beam top-[-10%] left-[-8%]" />
