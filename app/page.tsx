@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { SiCodechef, SiCodeforces, SiLeetcode, SiGmail, SiCodingninjas } from "react-icons/si";
 import { FaPhoneAlt, FaDownload } from "react-icons/fa";
 import Typewriter from "typewriter-effect";
@@ -18,14 +17,21 @@ import Experience from "@/app/components/experience/experience";
 import Contact from "@/app/components/contact/contact";
 import Projects from "@/app/components/projects/projects";
 import Achievements from "@/app/components/achievements/achievements";
-import { useEffect, useState } from "react";
+import Shayari from "@/app/components/shayari/shayari";
+import Appointment from "@/app/components/appointment/appointment";
+import AIAssistant from "@/app/components/ai-assistant/ai-assistant";
+import Skills3DGlobe from "@/app/components/skills3d/Skills3DGlobe";
+import TiltCard3D from "@/app/components/interactive/TiltCard3D";
+import Scene3D from "@/app/components/interactive/Scene3D";
+import { useEffect, useState, useRef } from "react";
+import { useScroll, useTransform } from "framer-motion";
+import { Rocket, MapPin, Feather, Code2, Plane, Star, Globe, Zap } from "lucide-react";
 
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 500, height: 500 });
   const [isResumeHovered, setIsResumeHovered] = useState(false);
 
   useEffect(() => {
-    // Only run on the client side
     setWindowSize({
       width: window.innerWidth,
       height: window.innerHeight
@@ -42,31 +48,42 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const projects = [
+  const interests = [
     {
-      title: "Portfolio Website",
-      description: "A modern portfolio website built with Next.js and Tailwind CSS",
-      image: "https://images.unsplash.com/photo-1487014679447-9f8336841d58?q=80&w=2070&auto=format&fit=crop",
-      github: "https://github.com/vinodkumarmaury/my-portfolio",
-      demo: "https://vinod-kumar-maurya-portfolio.netlify.app/",
-      tech: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI"]
+      icon: <Code2 className="w-6 h-6" />,
+      title: "Full-Stack Dev",
+      description: "Building production-ready apps with React, Next.js, Django & FastAPI.",
+      color: "#00e5ff",
+      gradient: "from-cyan-500/20 to-blue-600/20",
     },
-    // Add more projects here
+    {
+      icon: <Rocket className="w-6 h-6" />,
+      title: "Startup Founder",
+      description: "Dreaming of building a billion-dollar startup. Big ideas, relentless hustle.",
+      color: "#a855f7",
+      gradient: "from-purple-500/20 to-pink-600/20",
+    },
+    {
+      icon: <Feather className="w-6 h-6" />,
+      title: "Shayar & Writer",
+      description: "Writing shayari that blends code, life, and the journey from Bahraich to Bengaluru.",
+      color: "#f59e0b",
+      gradient: "from-yellow-500/20 to-orange-600/20",
+    },
+    {
+      icon: <Plane className="w-6 h-6" />,
+      title: "Travel Lover",
+      description: "Every journey teaches. From mountains to code — exploration is my nature.",
+      color: "#22c55e",
+      gradient: "from-green-500/20 to-emerald-600/20",
+    },
   ];
 
-  const skills = [
-    { 
-      category: "Frontend", 
-      items: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS", "Material UI", "Bootstrap"] 
-    },
-    { 
-      category: "Backend", 
-      items: ["Node.js", "Express", "MongoDB", "SQL", "Firebase", "REST API"] 
-    },
-    { 
-      category: "Tools & Others", 
-      items: ["Git", "VS Code", "Postman", "Figma", "Redux", "TypeScript", "AWS"] 
-    },
+  const stats = [
+    { icon: <Code2 className="w-6 h-6" />, number: "1000+", label: "Problems Solved", color: "#00e5ff" },
+    { icon: <Star className="w-6 h-6" />, number: "12+", label: "Projects Shipped", color: "#a855f7" },
+    { icon: <Globe className="w-6 h-6" />, number: "3+", label: "Years of Coding", color: "#22c55e" },
+    { icon: <Zap className="w-6 h-6" />, number: "5+", label: "Internships & Jobs", color: "#f59e0b" },
   ];
 
   return (
@@ -78,265 +95,435 @@ export default function Home() {
         <div className="bg-blob w-80 h-80 bottom-[14%] left-[18%] opacity-30" style={{ animationDelay: '-2s' }}></div>
         <div className="bg-blob w-64 h-64 bottom-0 right-[12%] opacity-20" style={{ animationDelay: '-7s' }}></div>
 
-          <GameCursor />
-          <GamingBackground />
+        <GameCursor />
+        <GamingBackground />
 
-        <section className="relative flex items-start justify-center overflow-hidden pt-24 pb-14 md:pt-28">
-          <div className="hero-particles-container">
-            <div className="hero-grid-line" />
-            <div className="hero-beam top-[-10%] left-[-8%]" />
-            <div className="hero-beam bottom-[-14%] right-[-10%]" style={{ animationDelay: '-4s' }} />
-            {[...Array(20)].map((_, i) => (
+        {/* ══════════════════ HERO — PS5 PLAYER SELECT ══════════════════ */}
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10">
+          {/* Ambient beams */}
+          <div className="hero-beam top-[-10%] left-[-8%]" />
+          <div className="hero-beam bottom-[-14%] right-[-10%]" style={{ animationDelay: '-4s' }} />
+          <div className="hero-grid-line absolute inset-0" />
+
+          {/* Floating mini particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(24)].map((_, i) => (
               <motion.div
                 key={i}
-                className="hero-particle"
-                initial={{
-                  x: Math.random() * windowSize.width,
-                  y: Math.random() * windowSize.height,
-                  opacity: Math.random() * 0.5 + 0.1
-                }}
-                animate={{
-                  x: Math.random() * windowSize.width,
-                  y: Math.random() * windowSize.height,
-                  opacity: Math.random() * 0.5 + 0.1
-                }}
-                transition={{
-                  duration: Math.random() * 10 + 20,
-                  repeat: Infinity,
-                  repeatType: "mirror"
-                }}
+                className="hero-particle absolute"
+                style={{ left: `${(i * 4.1) % 100}%`, top: `${(i * 7.3) % 100}%` }}
+                animate={{ y: [0, -30, 0], opacity: [0.15, 0.7, 0.15] }}
+                transition={{ duration: 4 + (i % 5), repeat: Infinity, delay: i * 0.3, ease: "easeInOut" }}
               />
             ))}
           </div>
 
-          <div className="hero-container relative z-10">
-            <motion.div 
-              className="hero-layout"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <motion.div 
-                className="hero-image-container"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                whileHover={{ scale: 1.08, rotate: -2, y: -6 }}
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
+            {/* Main hero grid */}
+            <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+
+              {/* ── LEFT: Player Card (image + rings) ── */}
+              <motion.div
+                className="relative flex-shrink-0"
+                initial={{ opacity: 0, scale: 0.7, rotateY: -30 }}
+                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                transition={{ duration: 1, delay: 0.2, type: "spring", stiffness: 80 }}
+                style={{ perspective: 800 }}
               >
-                <div className="hero-ring" />
-                <div className="hero-ring secondary" />
-                <Image 
-                  src="/images/profile.jpg" 
-                  alt="Vinod Kumar Maurya" 
-                  width={300}
-                  height={300}
-                  className="hero-image"
-                  priority
-                />
-              </motion.div>
-              
-              <motion.div 
-                className="hero-content"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                <motion.h3 
-                  className="hero-greeting"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                >
-                  Hello, I am
-                </motion.h3>  
-                <motion.h2 
-                  className="hero-name"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                >
-                  Vinod Kumar Maurya 
-                </motion.h2>
+                {/* Outer glow disc */}
                 <motion.div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: "conic-gradient(from 0deg, rgba(0,229,255,0.6), rgba(168,85,247,0.5), rgba(34,197,94,0.4), rgba(0,229,255,0.6))",
+                    filter: "blur(18px)",
+                    borderRadius: "9999px",
+                    inset: "-20px"
+                  }}
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Ring 3 — outermost */}
+                <motion.div
+                  className="absolute"
+                  style={{
+                    inset: "-28px", borderRadius: "9999px",
+                    border: "1px dashed rgba(0,229,255,0.25)"
+                  }}
+                  animate={{ rotate: [0, -360] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                />
+                {/* Ring 2 */}
+                <motion.div
+                  className="absolute"
+                  style={{
+                    inset: "-14px", borderRadius: "9999px",
+                    border: "1.5px solid rgba(168,85,247,0.4)",
+                    boxShadow: "0 0 20px rgba(168,85,247,0.2)"
+                  }}
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                />
+                {/* Ring 1 */}
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    borderRadius: "9999px",
+                    border: "2px solid rgba(0,229,255,0.6)",
+                    boxShadow: "0 0 30px rgba(0,229,255,0.3), inset 0 0 20px rgba(0,229,255,0.08)"
+                  }}
+                  animate={{ scale: [1, 1.04, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+
+                {/* Profile image with 3D tilt */}
+                <TiltCard3D maxTilt={18} glare scale={1.05} className="relative z-10">
+                  <Image
+                    src="/images/profile.jpg"
+                    alt="Vinod Kumar Maurya"
+                    width={280}
+                    height={280}
+                    className="rounded-full object-cover border-4"
+                    style={{
+                      borderColor: "rgba(0,229,255,0.5)",
+                      boxShadow: "0 0 40px rgba(0,229,255,0.4), 0 0 80px rgba(0,229,255,0.15)"
+                    }}
+                    priority
+                  />
+                </TiltCard3D>
+
+                {/* Floating PS-style badges around image */}
+                {[
+                  { label: "×", top: "8%",  left: "92%",  color: "#00e5ff" },
+                  { label: "○", top: "92%", left: "88%",  color: "#fbbf24" },
+                  { label: "△", top: "5%",  left: "5%",   color: "#a855f7" },
+                  { label: "□", top: "88%", left: "2%",   color: "#22c55e" },
+                ].map((b, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border z-20"
+                    style={{
+                      top: b.top, left: b.left,
+                      borderColor: b.color + "60",
+                      backgroundColor: b.color + "18",
+                      color: b.color,
+                      boxShadow: `0 0 12px ${b.color}50`
+                    }}
+                    animate={{ y: [0, -6, 0], rotate: [0, 10, 0] }}
+                    transition={{ duration: 3 + i * 0.7, repeat: Infinity, delay: i * 0.4 }}
+                  >
+                    {b.label}
+                  </motion.div>
+                ))}
+
+                {/* Level badge */}
+                <motion.div
+                  className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 px-4 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(0,229,255,0.2), rgba(168,85,247,0.15))",
+                    borderColor: "rgba(0,229,255,0.5)",
+                    color: "#00e5ff",
+                    boxShadow: "0 0 20px rgba(0,229,255,0.3)"
+                  }}
+                  animate={{ boxShadow: ["0 0 20px rgba(0,229,255,0.3)", "0 0 35px rgba(0,229,255,0.6)", "0 0 20px rgba(0,229,255,0.3)"] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  LVL 26 • IIT KGP
+                </motion.div>
+              </motion.div>
+
+              {/* ── RIGHT: Text + HUD ── */}
+              <div className="flex-1 text-center lg:text-left">
+                {/* Greeting */}
+                <motion.div
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-4 text-xs font-semibold tracking-[0.3em] uppercase"
+                  style={{ borderColor: "rgba(0,229,255,0.3)", backgroundColor: "rgba(0,229,255,0.06)", color: "#00e5ff" }}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
+                  <motion.span
+                    className="w-2 h-2 rounded-full bg-green-400"
+                    animate={{ scale: [1, 1.4, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                  PLAYER ONLINE · SOFTWARE ENGINEER
+                </motion.div>
+
+                {/* Name */}
+                <motion.h1
+                  className="hero-name mb-3"
+                  initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.7 }}
+                >
+                  Vinod Kumar<br />
+                  <span style={{ backgroundImage: "linear-gradient(135deg, #00e5ff, #a855f7, #22c55e)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    Maurya
+                  </span>
+                </motion.h1>
+
+                {/* Typewriter */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  className="mb-6"
                 >
                   <h3 className="hero-typewriter">
-                    <Typewriter        
+                    <Typewriter
                       options={{
-                        strings: ['A Problem Solver', 'Loves Programming', "A Passionate Developer"],
+                        strings: [
+                          'Software Engineer 💻',
+                          'IIT Kharagpur Grad 🎓',
+                          'Startup Founder Wannabe 🚀',
+                          'Shayar & Poet ✍️',
+                          'Travel Lover 🌏',
+                          'Full Stack Builder 🛠️',
+                          'Billionaire in Progress 💰',
+                          'Problem Solver ⚡',
+                        ],
                         autoStart: true,
                         loop: true,
                         delay: 40,
-                        deleteSpeed: 40,
+                        deleteSpeed: 30,
                       }}
                     />
-                  </h3> 
+                  </h3>
                 </motion.div>
-              </motion.div>
-            </motion.div>
 
+                {/* XP / Stat bars */}
+                <motion.div
+                  className="mb-6 space-y-2 max-w-sm mx-auto lg:mx-0"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.2 }}
+                >
+                  {[
+                    { label: "Full-Stack",    val: 90, color: "#00e5ff" },
+                    { label: "Problem Solving", val: 82, color: "#a855f7" },
+                    { label: "Machine Learning", val: 70, color: "#22c55e" },
+                    { label: "Startup Vision",  val: 95, color: "#fbbf24" },
+                  ].map((bar, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground w-32 text-right flex-shrink-0">{bar.label}</span>
+                      <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{
+                            background: `linear-gradient(90deg, ${bar.color}80, ${bar.color})`,
+                            boxShadow: `0 0 8px ${bar.color}60`
+                          }}
+                          initial={{ width: "0%" }}
+                          animate={{ width: `${bar.val}%` }}
+                          transition={{ duration: 1.2, delay: 1.3 + i * 0.1, ease: "easeOut" }}
+                        />
+                      </div>
+                      <span className="text-xs font-bold w-8" style={{ color: bar.color }}>{bar.val}</span>
+                    </div>
+                  ))}
+                </motion.div>
+
+                {/* HUD Panels */}
+                <motion.div
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 1.4 }}
+                >
+                  <motion.div
+                    className="glass-panel panel-border hud-corners neon-border-animated os-window"
+                    whileHover={{ y: -4, scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="hud-title">Status</div>
+                    <div className="hud-value text-xl">SWE @ Machani</div>
+                    <p className="hud-caption">Bengaluru · IIT KGP ʼ26</p>
+                  </motion.div>
+                  <motion.div
+                    className="glass-panel panel-border hud-corners neon-border-animated os-window"
+                    whileHover={{ y: -4, scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="hud-title">Mission</div>
+                    <div className="hud-value text-xl" style={{ color: "#a855f7" }}>Startup + Billion$</div>
+                    <p className="hud-caption">No limits. Relentless.</p>
+                  </motion.div>
+                  <motion.div
+                    className="glass-panel panel-border hud-corners neon-border-animated os-window"
+                    whileHover={{ y: -4, scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="hud-title">Vibe</div>
+                    <div className="hud-value text-xl" style={{ color: "#22c55e" }}>Code × Shayari</div>
+                    <p className="hud-caption">Code day, write night.</p>
+                  </motion.div>
+                </motion.div>
+
+                {/* Social icons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 1.6 }}
+                >
+                  <ul className="hero-social-icons justify-center lg:justify-start">
+                    {[
+                      { href: "https://www.linkedin.com/in/vinod-maurya/",                       icon: <i className="fab fa-linkedin-in" /> },
+                      { href: "https://github.com/vinodkumarmaury",                               icon: <i className="fa-brands fa-github" /> },
+                      { href: "https://x.com/its_vinod_kr",                                      icon: <i className="fa-brands fa-twitter" /> },
+                      { href: "https://www.instagram.com/vinodmaurya0410/",                       icon: <i className="fa-brands fa-instagram" /> },
+                      { href: "https://www.codechef.com/users/vinodmaurya",                       icon: <i><SiCodechef /></i> },
+                      { href: "https://codeforces.com/profile/vinod_kumar_maurya",                icon: <i><SiCodeforces /></i> },
+                      { href: "https://leetcode.com/Vinod_Kumar_Maurya/",                        icon: <i><SiLeetcode /></i> },
+                      { href: "https://www.codingninjas.com/studio/profile/Vinod_IITKGP",        icon: <i><SiCodingninjas /></i> },
+                      { href: "mailto:vinodmaurya0410@gmail.com",                                icon: <i><SiGmail /></i> },
+                      { href: "tel:9305627067",                                                   icon: <i><FaPhoneAlt /></i> },
+                    ].map((item, i) => (
+                      <motion.li
+                        key={i}
+                        whileHover={{ scale: 1.25, y: -4 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >
+                        <Link href={item.href} target="_blank" rel="noreferrer">{item.icon}</Link>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Scroll indicator */}
             <motion.div
-              className="hero-panel"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.1 }}
+              className="flex flex-col items-center mt-12 gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2.2 }}
             >
-              <div className="glass-panel panel-border hud-corners hover:translate-y-[-4px] hover:border-cyan-300/30 transition-transform duration-300 neon-border-animated os-window">
-                <div className="hud-title">Status</div>
-                <div className="hud-value">Full Stack Player</div>
-                <p className="hud-caption">Building production systems with fast interactions and polished visuals.</p>
-              </div>
-              <div className="glass-panel panel-border hud-corners hover:translate-y-[-4px] hover:border-fuchsia-300/30 transition-transform duration-300 neon-border-animated os-window">
-                <div className="hud-title">Loadout</div>
-                <div className="hud-value">Next.js + Motion</div>
-                <p className="hud-caption">Neon interfaces, clean architecture, and responsive UI systems.</p>
-              </div>
-              <div className="glass-panel panel-border hud-corners hover:translate-y-[-4px] hover:border-emerald-300/30 transition-transform duration-300 neon-border-animated os-window">
-                <div className="hud-title">Mission</div>
-                <div className="hud-value">High Impact Builds</div>
-                <p className="hud-caption">Turning ideas into interactive web experiences with a gaming-inspired edge.</p>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              id="name-social-container"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-            >
-              <ul className="hero-social-icons">
-                {/* Your existing social links */}
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://www.linkedin.com/in/vinod-maurya/" target="_blank" rel="noreferrer">
-                    <i className="fab fa-linkedin-in"></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://github.com/vinodkumarmaury" target="_blank" rel="noreferrer">
-                    <i className="fa-brands fa-github"></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://x.com/its_vinod_kr" target="_blank" rel="noreferrer">
-                    <i className="fa-brands fa-twitter"></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://www.facebook.com/profile.php?id=100046770062491" target="_blank" rel="noreferrer">
-                    <i className="fab fa-facebook-f"></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://www.instagram.com/vinodmaurya0410/" target="_blank" rel="noreferrer">
-                    <i className="fa-brands fa-instagram"></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://www.codechef.com/users/vinodmaurya" target="_blank" rel="noreferrer">
-                    <i><SiCodechef /></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://codeforces.com/profile/vinod_kumar_maurya" target="_blank" rel="noreferrer">
-                    <i><SiCodeforces/></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://www.codingninjas.com/studio/profile/Vinod_IITKGP" target="_blank" rel="noreferrer">
-                    <i><SiCodingninjas/></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="mailto:vinodmaurya0410@gmail.com" target="_blank" rel="noreferrer">
-                    <i><SiGmail/></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="https://leetcode.com/Vinod_Kumar_Maurya/" target="_blank" rel="noreferrer">
-                    <i><SiLeetcode/></i>
-                  </Link>
-                </motion.li>
-                <motion.li whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                  <Link href="tel:9305627067" target="_blank" rel="noreferrer">
-                    <i><FaPhoneAlt/></i>
-                  </Link>
-                </motion.li>
-              </ul>
+              <span className="text-xs tracking-[0.3em] uppercase text-muted-foreground">Scroll to explore</span>
+              <motion.div
+                className="w-5 h-8 rounded-full border-2 border-primary/40 flex justify-center pt-1.5"
+                animate={{ borderColor: ["rgba(0,229,255,0.3)", "rgba(0,229,255,0.8)", "rgba(0,229,255,0.3)"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <motion.div
+                  className="w-1 h-2 rounded-full bg-primary"
+                  animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              </motion.div>
             </motion.div>
           </div>
         </section>
 
-        {/* Professional About Me Section */}
-        <section id="about" className="py-24 bg-background">
+        {/* ══════════════════ ABOUT — PS5 CHARACTER PROFILE ══════════════════ */}
+        <section id="about" className="py-20 relative overflow-hidden">
+          {/* Section ambient glow */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(0,229,255,0.04), transparent 70%)", filter: "blur(40px)" }} />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(168,85,247,0.04), transparent 70%)", filter: "blur(40px)" }} />
+
           <div className="container px-4 mx-auto">
-            <div className="flex flex-col items-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 relative about-heading">
+            {/* Section header */}
+            <motion.div
+              className="flex flex-col items-center mb-14"
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/60" />
+                <span className="text-xs tracking-[0.4em] uppercase text-primary/80 font-semibold">Player Profile</span>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/60" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-3 gaming-title">
                 About Me
-                <span className="about-heading-decoration"></span>
               </h2>
-              <p className="text-muted-foreground text-center max-w-2xl">
-                Full Stack Developer with expertise in building modern, responsive web applications
+              <p className="text-muted-foreground text-center max-w-xl">
+                Engineer · Builder · Shayar · Dreamer · Traveller
               </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 max-w-6xl mx-auto">
-              {/* Left Column - Personal Details */}
-              <div className="md:col-span-4 space-y-6">
-                <div className="bg-card rounded-lg shadow-lg overflow-hidden border border-border/40 hud-corners os-window">
-                  <div className="bg-gradient-to-r from-primary/10 to-secondary p-6 relative">
-                    <div className="about-card-pattern"></div>
-                    <h3 className="text-xl font-semibold mb-3">
-                      Personal Details
-                    </h3>
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
+
+              {/* ── LEFT: Character Card ── */}
+              <div className="lg:col-span-4 space-y-5">
+
+                {/* Profile card */}
+                <motion.div
+                  className="relative rounded-2xl overflow-hidden border hud-corners os-window"
+                  style={{ borderColor: "rgba(0,229,255,0.2)", background: "linear-gradient(135deg, rgba(0,229,255,0.04), rgba(168,85,247,0.04))" }}
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  whileHover={{ borderColor: "rgba(0,229,255,0.4)" }}
+                >
+                  {/* Top banner */}
+                  <div className="relative h-24 overflow-hidden"
+                    style={{ background: "linear-gradient(135deg, rgba(0,229,255,0.15), rgba(168,85,247,0.12), rgba(34,197,94,0.08))" }}>
+                    <div className="about-card-pattern absolute inset-0" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xs tracking-[0.35em] uppercase text-white/40 font-medium">Character Info</span>
+                    </div>
+                    {/* PS symbols floating */}
+                    {["×", "○", "△", "□"].map((s, i) => (
+                      <motion.span
+                        key={i}
+                        className="absolute text-sm font-bold"
+                        style={{
+                          top: `${20 + (i % 2) * 40}%`, left: `${10 + i * 22}%`,
+                          color: ["#00e5ff","#fbbf24","#a855f7","#22c55e"][i],
+                          opacity: 0.3
+                        }}
+                        animate={{ y: [0, -4, 0], opacity: [0.2, 0.5, 0.2] }}
+                        transition={{ duration: 2 + i * 0.5, repeat: Infinity, delay: i * 0.3 }}
+                      >{s}</motion.span>
+                    ))}
                   </div>
-                  <div className="p-6 space-y-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                        <i className="fas fa-user"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Name</h4>
-                        <p className="text-muted-foreground">Vinod Kumar Maurya</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-4 items-start">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                        <i className="fas fa-map-marker-alt"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Location</h4>
-                        <p className="text-muted-foreground">India</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-4 items-start">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                        <i className="fas fa-envelope"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Email</h4>
-                        <p className="text-muted-foreground">vinodmaurya0410@gmail.com</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-4 items-start">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                        <i className="fas fa-phone-alt"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Phone</h4>
-                        <p className="text-muted-foreground">+91 9305627067</p>
-                      </div>
-                    </div>
+
+                  {/* Details */}
+                  <div className="p-5 space-y-4">
+                    {[
+                      { icon: <i className="fas fa-user" />, label: "Name", value: "Vinod Kumar Maurya", color: "#00e5ff" },
+                      { icon: <MapPin className="w-4 h-4" />, label: "Location", value: "Bengaluru, Karnataka", color: "#22c55e" },
+                      { icon: <i className="fas fa-graduation-cap" />, label: "Education", value: "Dual Degree — IIT KGP", sub: "Mining Engg. | CGPA 7.64", color: "#a855f7" },
+                      { icon: <i className="fas fa-envelope" />, label: "Email", value: "vinodmaurya0410@gmail.com", color: "#fbbf24" },
+                      { icon: <i className="fas fa-phone-alt" />, label: "Phone", value: "+91 9305627067", color: "#00e5ff" },
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex gap-3 items-start group"
+                        whileHover={{ x: 4 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div
+                          className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-sm"
+                          style={{ backgroundColor: `${item.color}18`, color: item.color, border: `1px solid ${item.color}30` }}
+                        >
+                          {item.icon}
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                          <p className="text-sm font-medium">{item.value}</p>
+                          {item.sub && <p className="text-xs" style={{ color: item.color }}>{item.sub}</p>}
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
-                </div>
-                
-                <div className="relative">
-                  <Link 
-                    href="https://drive.google.com/file/d/1ktC8iFLBrkRw3tH3J12rPjM5XR6-uGth/view?usp=sharing" 
+                </motion.div>
+
+                {/* Resume download */}
+                <motion.div
+                  className="relative"
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                >
+                  <Link
+                    href="https://drive.google.com/file/d/1ktC8iFLBrkRw3tH3J12rPjM5XR6-uGth/view?usp=sharing"
                     target="_blank"
                     className="download-resume-btn"
                     onMouseEnter={() => setIsResumeHovered(true)}
@@ -345,27 +532,27 @@ export default function Home() {
                     <FaDownload className="mr-2" />
                     Download Resume
                   </Link>
-                  
+
                   <AnimatePresence>
                     {isResumeHovered && (
-                      <motion.div 
+                      <motion.div
                         className="resume-preview"
                         initial={{ opacity: 0, y: 20, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1.9 }}
                         exit={{ opacity: 0, y: 20, scale: 0.8 }}
                         transition={{ duration: 0.8 }}
                       >
-                        <motion.div 
+                        <motion.div
                           className="resume-preview-inner"
                           initial={{ rotateY: 30 }}
                           animate={{ rotateY: 0, scale: 1.2 }}
                           transition={{ duration: 0.5 }}
                         >
-                          <Image 
-                            src="/images/resume.png" 
-                            alt="Resume Preview" 
-                            width={550} 
-                            height={650} 
+                          <Image
+                            src="/images/resume.png"
+                            alt="Resume Preview"
+                            width={550}
+                            height={650}
                             className="rounded-md shadow-xl"
                           />
                           <div className="resume-preview-overlay">
@@ -375,89 +562,328 @@ export default function Home() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
+
+                {/* Interests */}
+                <motion.div
+                  className="space-y-2.5"
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  {interests.map((interest, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-3 p-3 rounded-xl border bg-card/30 hud-corners"
+                      style={{ borderColor: "rgba(255,255,255,0.06)" }}
+                      whileHover={{ x: 6, borderColor: interest.color + "50", backgroundColor: interest.color + "08" }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: `${interest.color}18`, color: interest.color }}
+                      >
+                        {interest.icon}
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{interest.title}</p>
+                        <p className="text-xs text-muted-foreground">{interest.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
               </div>
-              
-              {/* Right Column - Bio */}
-              <div className="md:col-span-8 space-y-6">
-                <div className="bg-card rounded-lg shadow-lg p-6 border border-border/40 bio-card hud-corners os-window">
-                  <h3 className="text-xl font-semibold mb-6 flex items-center">
-                    <i className="fas fa-user-graduate mr-3 text-primary"></i>
-                    Biography
+
+              {/* ── RIGHT: Story + Stats ── */}
+              <div className="lg:col-span-8 space-y-6">
+
+                {/* Journey timeline */}
+                <motion.div
+                  className="rounded-2xl border p-6 hud-corners os-window"
+                  style={{ borderColor: "rgba(0,229,255,0.15)", background: "rgba(0,229,255,0.02)" }}
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <h3 className="text-lg font-bold mb-5 flex items-center gap-2">
+                    <span className="text-primary text-xl">◈</span>
+                    My Story
                   </h3>
-                  
-                  <div className="space-y-4 text-muted-foreground leading-relaxed">
-                      <p>
-                        Pursuing an integrated B.Tech.+M.Tech. degree in Mining Engineering at IIT Kharagpur, I have built
-                        a strong engineering foundation while actively exploring software development. My passion for web
-                        technologies led to hands-on experience as a Full Stack Developer at ClaimBuddy, where I contributed
-                        to Django modules, API integrations, and automation to improve operational efficiency.
-                      </p>
 
-                      <p>
-                        I work with technologies like Node.js, Express.js, MongoDB, Django, React, and Next.js to deliver
-                        scalable and user-friendly software. My experience includes building dashboards, designing
-                        backend services, applying ML for data analysis, and optimizing full-stack performance.
-                      </p>
+                  <div className="relative space-y-5">
+                    {/* Vertical timeline line */}
+                    <div className="absolute left-[19px] top-2 bottom-2 w-px" style={{ background: "linear-gradient(to bottom, rgba(0,229,255,0.4), rgba(168,85,247,0.4), rgba(0,229,255,0.1))" }} />
 
-                      <p>
-                        I am committed to solving real-world challenges through efficient software solutions and continuous
-                        learning. Outside development, I enjoy research, competitive programming, and contributing to
-                        production-ready systems that create measurable impact.
-                      </p>
+                    {[
+                      { dot: "#00e5ff", symbol: "×", title: "Bahraich → IIT KGP", desc: "From a small UP town to IIT Kharagpur — Dual Degree in Mining Engg. (CGPA 7.64). An underdog story that proves grit over everything.", color: "#00e5ff" },
+                      { dot: "#a855f7", symbol: "△", title: "Software Engineer @ Machani Group", desc: "Building scalable web apps with React, Next.js, Django & FastAPI. Previously interned at Enerzyflow, ClaimBuddy & Delishia Analytics — real code, real users, real impact.", color: "#a855f7" },
+                      { dot: "#fbbf24", symbol: "○", title: "The Billion-Dollar Dream", desc: "Beyond the 9-to-5: I'm building toward my own startup. Thinking big, executing relentlessly — every line of code is a step toward a company that touches millions.", color: "#fbbf24" },
+                      { dot: "#22c55e", symbol: "□", title: "Shayar & World Traveller", desc: "I write shayari that blends code with philosophy. When not shipping features, I'm exploring new cities, cultures and perspectives — staying human while being technical.", color: "#22c55e" },
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        className="relative flex gap-5 pl-10"
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: i * 0.1 }}
+                      >
+                        {/* Timeline dot */}
+                        <div
+                          className="absolute left-0 top-1 w-10 h-10 rounded-full border flex items-center justify-center text-sm font-bold flex-shrink-0"
+                          style={{ borderColor: item.dot + "60", backgroundColor: item.dot + "15", color: item.dot, boxShadow: `0 0 12px ${item.dot}40` }}
+                        >
+                          {item.symbol}
+                        </div>
+                        <div className="flex-1 pb-1">
+                          <h4 className="font-semibold text-sm mb-1.5" style={{ color: item.color }}>{item.title}</h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
-                </div>
-                
-                {/* Professional Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <i className="fas fa-code"></i>
+                </motion.div>
+
+                {/* Stats */}
+                <motion.div
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  {stats.map((stat, i) => (
+                    <motion.div
+                      key={i}
+                      className="stat-card hud-corners"
+                      whileHover={{ y: -8, scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <div
+                        className="stat-icon mb-3"
+                        style={{ color: stat.color, backgroundColor: `${stat.color}20` }}
+                      >
+                        {stat.icon}
+                      </div>
+                      <motion.div
+                        className="stat-number text-2xl font-bold"
+                        style={{ color: stat.color }}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ type: "spring", stiffness: 200, delay: i * 0.1 }}
+                      >
+                        {stat.number}
+                      </motion.div>
+                      <div className="stat-label text-xs">{stat.label}</div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                {/* Competitive coding + Startup vision side by side */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Coding ratings */}
+                  <motion.div
+                    className="rounded-xl border p-5 hud-corners"
+                    style={{ borderColor: "rgba(0,229,255,0.15)", background: "rgba(0,229,255,0.02)" }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.25 }}
+                    whileHover={{ borderColor: "rgba(0,229,255,0.4)" }}
+                  >
+                    <h4 className="font-bold text-sm mb-4 text-primary flex items-center gap-2">
+                      <span>⚡</span> Competitive Coding
+                    </h4>
+                    <div className="space-y-3">
+                      {[
+                        { platform: "LeetCode", rating: "1688", bar: 68, color: "#f59e0b" },
+                        { platform: "Codeforces", rating: "1224", bar: 49, color: "#00e5ff" },
+                        { platform: "CodeChef", rating: "3★", bar: 60, color: "#a855f7" },
+                        { platform: "Problems Solved", rating: "1000+", bar: 90, color: "#22c55e" },
+                      ].map((c, i) => (
+                        <div key={i}>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span className="text-muted-foreground">{c.platform}</span>
+                            <span className="font-bold" style={{ color: c.color }}>{c.rating}</span>
+                          </div>
+                          <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ background: c.color, boxShadow: `0 0 6px ${c.color}60` }}
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${c.bar}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, delay: 0.3 + i * 0.1 }}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="stat-number">1000+</div>
-                    <div className="stat-label">Problems Solved</div>
-                  </div>
-                  
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <i className="fas fa-project-diagram"></i>
+                  </motion.div>
+
+                  {/* Startup Vision */}
+                  <motion.div
+                    className="rounded-xl border p-5 hud-corners os-window"
+                    style={{ borderColor: "rgba(168,85,247,0.2)", background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(0,229,255,0.03))" }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    whileHover={{ borderColor: "rgba(168,85,247,0.5)" }}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <motion.div
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.3), rgba(0,229,255,0.2))" }}
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Rocket className="w-5 h-5 text-purple-400" />
+                      </motion.div>
+                      <h4 className="font-bold text-sm text-purple-300">Startup Vision</h4>
                     </div>
-                    <div className="stat-number">10+</div>
-                    <div className="stat-label">Projects Completed</div>
-                  </div>
-                  
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <i className="fas fa-laptop-code"></i>
+                    <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                      Every great startup begins with an obsessive founder.
+                      <span className="text-purple-400 font-medium"> Building the foundation. The goal: impact millions.</span>
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {["Problem Solver", "Product Thinker", "Tech First", "0→1 Builder"].map((tag) => (
+                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                    <div className="stat-number">3+</div>
-                    <div className="stat-label">Years Coding Experience</div>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Skills Section */}
+        {/* ══════════════════ 3D INTERACTIVE ZONE ══════════════════ */}
+        <section id="skills3d" className="py-20 relative overflow-hidden">
+          {/* Floating 3D cubes canvas layer */}
+          <div className="absolute inset-0 opacity-60 pointer-events-none">
+            <Scene3D className="w-full h-full" />
+          </div>
+
+          <div className="container px-4 mx-auto relative z-10">
+            {/* Header */}
+            <motion.div
+              className="flex flex-col items-center mb-12"
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/60" />
+                <span className="text-xs tracking-[0.4em] uppercase text-primary/80 font-semibold">3D Interactive</span>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/60" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-3 gaming-title text-center">
+                Skills Universe
+              </h2>
+              <p className="text-muted-foreground text-center max-w-xl">
+                Every node is a skill — drag the sphere, scroll to zoom, click any node for details
+              </p>
+            </motion.div>
+
+            {/* Globe + side info layout */}
+            <div className="flex flex-col lg:flex-row items-center gap-12">
+              {/* 3D Globe */}
+              <motion.div
+                className="w-full lg:w-1/2 max-w-[520px]"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <Skills3DGlobe />
+              </motion.div>
+
+              {/* Right panel: quick stat cards */}
+              <div className="flex-1 grid grid-cols-2 gap-4 w-full max-w-md lg:max-w-none">
+                {[
+                  { label: "Frontend", count: 9,  color: "#00e5ff", icon: "◈", desc: "React, Next.js, TypeScript & more" },
+                  { label: "Backend",  count: 7,  color: "#a855f7", icon: "▲", desc: "Node, Django, FastAPI, Python" },
+                  { label: "Database", count: 6,  color: "#22c55e", icon: "■", desc: "PostgreSQL, MongoDB, Redis" },
+                  { label: "DevOps",   count: 6,  color: "#fbbf24", icon: "●", desc: "Docker, AWS, Git, CI/CD" },
+                  { label: "ML / AI",  count: 6,  color: "#f97316", icon: "◆", desc: "TensorFlow, PyTorch, Pandas" },
+                  { label: "CS & DSA", count: 5,  color: "#ec4899", icon: "✦", desc: "Algorithms, System Design" },
+                ].map((cat, i) => (
+                  <TiltCard3D key={i} maxTilt={12} glare>
+                    <motion.div
+                      className="rounded-xl border p-4 hud-corners h-full"
+                      style={{
+                        borderColor: cat.color + "30",
+                        background: cat.color + "08",
+                        transformStyle: "preserve-3d",
+                      }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.07 }}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xl" style={{ color: cat.color }}>{cat.icon}</span>
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: cat.color + "20", color: cat.color }}>
+                          {cat.count} skills
+                        </span>
+                      </div>
+                      <p className="font-bold text-sm mb-1">{cat.label}</p>
+                      <p className="text-xs text-muted-foreground">{cat.desc}</p>
+                      {/* mini bar */}
+                      <div className="mt-3 h-0.5 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ background: cat.color }}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${(cat.count / 9) * 100}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.2 + i * 0.07 }}
+                        />
+                      </div>
+                    </motion.div>
+                  </TiltCard3D>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════ SKILLS ══════════════════ */}
         <Skills />
 
-        {/* Education Section */}
+        {/* ══════════════════ EDUCATION ══════════════════ */}
         <Education />
 
-        {/* Experience Section */}
+        {/* ══════════════════ EXPERIENCE ══════════════════ */}
         <Experience />
 
-        {/* Projects Section */}
+        {/* ══════════════════ PROJECTS ══════════════════ */}
         <Projects />
 
-        {/* Achievements Section */}
+        {/* ══════════════════ SHAYARI / SOCIAL ══════════════════ */}
+        <Shayari />
+
+        {/* ══════════════════ ACHIEVEMENTS ══════════════════ */}
         <Achievements />
 
-        {/* Contact Section */}
+        {/* ══════════════════ SCHEDULE APPOINTMENT ══════════════════ */}
+        <Appointment />
+
+        {/* ══════════════════ CONTACT ══════════════════ */}
         <Contact />
       </main>
+
       <Footer />
+
+      {/* Floating AI Assistant */}
+      <AIAssistant />
     </>
   );
 }

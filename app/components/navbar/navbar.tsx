@@ -16,7 +16,7 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 50);
       
       // Track which section is currently in view
-      const sections = ["about", "skills", "education", "experience", "projects", "contact"];
+      const sections = ["about", "skills3d", "skills", "education", "experience", "projects", "shayari", "achievements", "appointment", "contact"];
       const currentSection = sections.find(section => {
         const element = document.getElementById(section);
         if (!element) return false;
@@ -35,10 +35,12 @@ export default function Navbar() {
   const navItems = [
     { name: "Home", href: "#" },
     { name: "About", href: "#about" },
+    { name: "3D Skills", href: "#skills3d" },
     { name: "Skills", href: "#skills" },
-    { name: "Education", href: "#education" },
     { name: "Experience", href: "#experience" },
     { name: "Projects", href: "#projects" },
+    { name: "Shayari", href: "#shayari" },
+    { name: "Meet", href: "#appointment" },
     { name: "Contact", href: "#contact" },
   ];
 

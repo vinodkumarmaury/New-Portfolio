@@ -1477,10 +1477,10 @@ body::after {
 }
 
 /* ═══════════════════════════════════════════════
-   GAMING OS — CURSOR SYSTEM
+   GAMING OS — CURSOR SYSTEM  (v2 — HIGH VISIBILITY)
    ═══════════════════════════════════════════════ */
 
-/* Hide the system cursor everywhere — custom canvas cursor takes over */
+/* Hide the system cursor everywhere */
 html,
 html *,
 html *::before,
@@ -1488,49 +1488,90 @@ html *::after {
   cursor: none !important;
 }
 
+/* ── Center dot — large, ultra-bright ── */
 .gc-dot {
   position: fixed;
-  width: 12px;
-  height: 12px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   pointer-events: none;
   z-index: 99999;
-  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.96), rgba(0,229,255,1));
+  background: radial-gradient(circle at 35% 30%, #ffffff, #00e5ff);
   box-shadow:
-    0 0 8px rgba(0,229,255,1),
-    0 0 18px rgba(0,229,255,0.7),
-    0 0 32px rgba(0,229,255,0.35);
+    0 0 0 2px rgba(255,255,255,0.85),
+    0 0 10px  rgba(0,229,255,1),
+    0 0 22px  rgba(0,229,255,0.95),
+    0 0 45px  rgba(0,229,255,0.7),
+    0 0 80px  rgba(0,229,255,0.4),
+    0 0 120px rgba(0,229,255,0.15);
   will-change: transform;
-  transition: opacity 150ms ease;
 }
 
+/* ── Outer ring — bigger, stronger ── */
 .gc-ring {
   position: fixed;
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 99998;
-  border: 1.5px solid rgba(0,229,255,0.55);
+  z-index: 99997;
+  border: 2px solid rgba(0,229,255,0.85);
   box-shadow:
-    0 0 12px rgba(0,229,255,0.2),
-    inset 0 0 12px rgba(0,229,255,0.06);
+    0 0 16px  rgba(0,229,255,0.6),
+    0 0 32px  rgba(0,229,255,0.35),
+    inset 0 0 20px rgba(0,229,255,0.12);
   will-change: transform;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  transition: border-color 100ms ease, box-shadow 100ms ease;
 }
 
-.gc-ring-click {
-  border-color: rgba(168, 85, 247, 0.9) !important;
+/* ── Crosshair bars ── */
+.gc-bar {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99998;
+  background: rgba(0,229,255,0.9);
   box-shadow:
-    0 0 20px rgba(168,85,247,0.5),
-    inset 0 0 20px rgba(168,85,247,0.12) !important;
-  animation: ringClickPulse 350ms ease-out forwards !important;
+    0 0 6px rgba(0,229,255,1),
+    0 0 12px rgba(0,229,255,0.7);
+  border-radius: 2px;
+  will-change: transform;
+  transition: background 100ms ease;
+}
+
+.gc-bar-top,
+.gc-bar-bottom {
+  width: 2px;
+  height: 10px;
+}
+
+.gc-bar-left,
+.gc-bar-right {
+  width: 10px;
+  height: 2px;
+}
+
+/* click flash: bars turn magenta */
+.gc-bar-click {
+  background: rgba(168,85,247,0.95) !important;
+  box-shadow:
+    0 0 8px rgba(168,85,247,1),
+    0 0 18px rgba(168,85,247,0.8) !important;
+}
+
+/* ── Click animation ── */
+.gc-ring-click {
+  border-color: rgba(168,85,247,0.95) !important;
+  box-shadow:
+    0 0 24px rgba(168,85,247,0.8),
+    0 0 48px rgba(168,85,247,0.4),
+    inset 0 0 20px rgba(168,85,247,0.18) !important;
+  animation: ringClickPulse 380ms ease-out forwards !important;
 }
 
 @keyframes ringClickPulse {
-  0%   { transform: translate(var(--tx,0), var(--ty,0)) scale(1); opacity: 1; }
-  50%  { transform: translate(var(--tx,0), var(--ty,0)) scale(1.55); opacity: 0.7; }
-  100% { transform: translate(var(--tx,0), var(--ty,0)) scale(1); opacity: 1; }
+  0%   { transform: translate(var(--tx,0), var(--ty,0)) scale(1);    opacity: 1; }
+  50%  { transform: translate(var(--tx,0), var(--ty,0)) scale(1.65); opacity: 0.6; }
+  100% { transform: translate(var(--tx,0), var(--ty,0)) scale(1);    opacity: 1; }
 }
 
 
@@ -2103,3 +2144,95 @@ input:focus, textarea:focus {
   66%  { transform: translate(-10px, 20px) scale(0.96); }
   100% { transform: translate(15px, -8px) scale(1.03); }
 }
+
+/* ═══════════════════════════════════════════════
+   SHAYARI SECTION — SOCIAL FEED STYLES
+   ═══════════════════════════════════════════════ */
+
+@layer components {
+  .shayari-card {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: rgba(4, 7, 20, 0.85);
+    backdrop-filter: blur(40px);
+    transition: all 0.3s ease;
+  }
+
+  .shayari-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px -20px rgba(0,229,255,0.2);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   APPOINTMENT SCHEDULER STYLES
+   ═══════════════════════════════════════════════ */
+
+@layer components {
+  .time-slot-btn {
+    @apply py-2 px-3 rounded-lg text-sm font-medium border transition-all;
+    background: rgba(4, 7, 20, 0.7);
+    border-color: rgba(0,229,255,0.15);
+  }
+
+  .time-slot-btn:hover {
+    border-color: rgba(0,229,255,0.4);
+    box-shadow: 0 0 14px rgba(0,229,255,0.1);
+  }
+
+  .time-slot-btn.selected {
+    background: rgba(0,229,255,0.15);
+    border-color: rgba(0,229,255,0.6);
+    box-shadow: 0 0 20px rgba(0,229,255,0.2);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   AI ASSISTANT CHAT STYLES
+   ═══════════════════════════════════════════════ */
+
+@layer components {
+  .ai-chat-window {
+    background: rgba(4, 7, 20, 0.95);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(0,229,255,0.2);
+    box-shadow:
+      0 0 0 1px rgba(0,229,255,0.1),
+      0 30px 80px -20px rgba(0,0,0,0.9),
+      0 0 60px rgba(0,229,255,0.08);
+  }
+}
+
+/* Scrollbar for chat */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0,229,255,0.2);
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════
+   INTERESTS CARD HOVER EFFECTS
+   ═══════════════════════════════════════════════ */
+
+@layer components {
+  .interest-card {
+    transition: all 0.25s ease;
+    background: rgba(4, 7, 20, 0.7);
+    border: 1px solid rgba(0,229,255,0.1);
+  }
+
+  .interest-card:hover {
+    transform: translateX(6px);
+    border-color: rgba(0,229,255,0.3);
+    box-shadow: 0 4px 20px rgba(0,229,255,0.08);
+  }
+}
+
+/* Noto Sans Devanagari for Hindi text */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&display=swap');
