@@ -7,48 +7,229 @@ import { Heart, MessageCircle, Share2, Bookmark, Quote, Feather, Globe, Code2, R
 const shayariPosts = [
   {
     id: 1,
-    category: "Code & Life",
-    categoryIcon: <Code2 className="w-4 h-4" />,
-    categoryColor: "#00e5ff",
-    hindi: "कोड की लाइनों में जिंदगी लिखी है मेरी,\nसपनों की दुनिया बनाता हूँ पर्दे पर।\nBug fix करते करते रात बीती है कितनी,\nपर हर sunrise के साथ नई उम्मीद है मेरी।",
-    english: "My life is written in lines of code,\nI build worlds of dreams on a glowing screen.\nHow many nights have passed fixing bugs alone,\nBut with every sunrise, a new hope is seen.",
-    likes: 847,
-    comments: 63,
-    timestamp: "2 days ago",
+    category: "Dil ki Daastaan",
+    categoryIcon: <Heart className="w-4 h-4" />,
+    categoryColor: "#f43f5e",
+    hindi: `Kaash us raat hum soye na hote,
+Na tum khwaabon mein aate, na hum tumhare hone ke khwaab sajate.
+
+Kaash us din gaadi thodi der se aati,
+Na woh tanha mulaqat hoti, na hum tumse yun nazrein milate.
+
+Kaash woh shehar thoda aur shor se bhara hota,
+Na hum teri baaton ko sun paate, na un baaton pe dil haar jaate.
+
+Kaash humne tumhe pehli dafa dekha hi na hota,
+Na aankhon se dil tak tera raasta banta, na hum apna sukoon gawaate.
+
+Kaash tumne yun halka sa chhua hi na hota,
+Na hum mom ki tarah pighalte, na khud ko sambhaal na paate.
+
+Har mod pe bas ek hi "kaash" reh gaya,
+Har dua se pehle tera naam reh gaya.
+
+Agar mile hi the...
+To humesha ke liye humare ho jaate.
+
+Aur agar kismat ko ye manzoor na tha...
+
+To kaash...
+Na tum humare raste aate, na hum tumhare.
+Na ye dil tumhara hota, na ise tootna padta.
+Aur kaash... Hum kabhi mile hi na hote.`,
+    english: `If only we hadn't stayed awake that night —
+You'd never have entered my dreams, I'd never have dreamt of belonging to you.
+
+If only the car had come a little late that day,
+That lonely meeting wouldn't have happened, our eyes would never have met.
+
+If only that city had been a little noisier,
+I'd never have heard your words, never let them break my heart.
+
+If only I had never seen you for the first time,
+No path would have formed from your eyes to my heart, I'd never have lost my peace.
+
+If only you had never touched me so lightly,
+I'd never have melted like wax, never lost the strength to hold myself.
+
+At every turn, only one "kaash" remained,
+Before every prayer, only your name remained.
+
+If we had met... we would have been each other's forever.
+But if fate didn't allow it...
+
+Then I wish — you never crossed my path, I never crossed yours.
+This heart would never have been yours. It would never have shattered.
+And I wish... we had never met at all.`,
+    likes: 3241,
+    comments: 187,
+    timestamp: "1 day ago",
+    mood: "longing",
+    gradient: "from-rose-500/20 to-pink-600/20",
+    border: "border-rose-500/30"
+  },
+  {
+    id: 2,
+    category: "Mohabbat",
+    categoryIcon: <Heart className="w-4 h-4" />,
+    categoryColor: "#ec4899",
+    hindi: `Mere gussa hone par pyaar se manana tera,
+Bikhri julfon ko dheere se sanwarna tera.
+Haaye, un qaatil nigahon se mujhe takna tera,
+Aur meri nazar padte hi muskurakar sharma jaana tera.
+Meri har baat aur har ehsaas ko samajhna tera,
+Dil ke har kone mein chupke se bas jaana tera.
+Ab to dil ki bas yahi aarzu reh gayi hai,
+Kab muqaddar mein likha hoga milna tera.`,
+    english: `Your way of calming me with love when I am angry,
+Your gentle way of softly arranging your scattered hair.
+Those killer eyes glancing at me — oh how they pierce,
+And that shy smile blooming when our eyes meet there.
+Understanding my every word, my every feeling so deeply,
+Quietly making a home in every corner of my heart.
+Now this heart holds only one longing remaining —
+When will fate inscribe the meeting of our paths?`,
+    likes: 2847,
+    comments: 143,
+    timestamp: "3 days ago",
+    mood: "love",
+    gradient: "from-pink-500/20 to-fuchsia-600/20",
+    border: "border-pink-500/30"
+  },
+  {
+    id: 3,
+    category: "Wafa & Judai",
+    categoryIcon: <Feather className="w-4 h-4" />,
+    categoryColor: "#f97316",
+    hindi: `Yun to chahne wale bahut mile, par tum-sa koi dildaar na mila,
+Dard bhi sabne bahut diye, par tum-sa koi gunahgaar na mila.
+Gairon se kya shikwa karte, apnon se bhi koi gila na mila,
+Jisko apna samjha tha humne, us jaisa koi adaakaar na mila.
+Girgit to yun hi badnaam hai, bas rang badalne ke liye,
+Lagta hai duniya walon ko ab tak tera deedaar na mila.`,
+    english: `Many came to love me, but none as warm as you,
+Many gave me pain, but none quite guilty like your form.
+What complaint to strangers — even my own people weren't true,
+The one I called mine — no actor matched that storm.
+The chameleon gets its bad name for just changing colors,
+But it seems the world hasn't yet seen what real betrayal conjures.`,
+    likes: 1934,
+    comments: 98,
+    timestamp: "5 days ago",
     mood: "reflective",
+    gradient: "from-orange-500/20 to-amber-600/20",
+    border: "border-orange-500/30"
+  },
+  {
+    id: 4,
+    category: "Dil ka Darwaza",
+    categoryIcon: <Quote className="w-4 h-4" />,
+    categoryColor: "#00e5ff",
+    hindi: `Kai logo ne dil ke darwaze pe dastak di, par maine andar bulaya nahi,
+Maine usko dil mein thodi der thahrane ki ijazat kya di, wo bahar aaya hi nahi.
+Jab dil ne use apni dhadkan samajh kar apna humsafar bana liya,
+To wo sukoon ki chabhi le gaya aur tala lagaya bhi nahi.`,
+    english: `Many knocked on the door of my heart, but I let none inside,
+I gave one permission to stay just a little — and they never left.
+When the heart made them its own heartbeat, its own companion,
+They took the key to my peace — and never even locked the door behind.`,
+    likes: 2156,
+    comments: 112,
+    timestamp: "1 week ago",
+    mood: "melancholy",
     gradient: "from-cyan-500/20 to-blue-600/20",
     border: "border-cyan-500/30"
   },
   {
-    id: 2,
-    category: "Startup Dreams",
-    categoryIcon: <Rocket className="w-4 h-4" />,
+    id: 5,
+    category: "Ishq-e-Kamil",
+    categoryIcon: <Heart className="w-4 h-4" />,
     categoryColor: "#a855f7",
-    hindi: "Startup का सपना आँखों में पाला है,\nBillionaire बनना है, यह इरादा कमाल है।\nIIT की राहों पर चला जो सफर,\nवो नींव है जिस पर मेरा सारा जहाँ है।",
-    english: "I've nurtured the dream of a startup in my eyes,\nBeing a billionaire — this intention is extraordinary.\nThe journey on IIT's roads I once walked,\nIs the foundation on which my whole world lies.",
-    likes: 1204,
-    comments: 89,
-    timestamp: "5 days ago",
-    mood: "ambitious",
-    gradient: "from-purple-500/20 to-pink-600/20",
+    hindi: `Tujhe har kisse ki kahani banana chahta hu main,
+Khud khara paani hoke bhi tujhe meetha dariya sa paana chahta hu main.
+Payal ki chan-chan, chudiyon ki khanak, maathe ki chhoti si bindi,
+Aankhon ke kajal se lekar teri har ada sajana chahta hu main.
+Jo bhi teri khwahish ho, haste haste tere kadmo me le aau,
+Tujhe sirf apna nahi, apne dil ki rani banana chahta hu main.`,
+    english: `I want to make you the story of every tale I know,
+Though I am plain water, I want to find in you a sweet river's flow.
+The anklet's jingle, bangles' melody, that tiny bindi on your brow,
+From the kohl of your eyes to every grace — I want to adorn you now.
+Whatever your wish, I want to lay it laughing at your feet,
+I don't just want to call you mine — I want to crown you queen complete.`,
+    likes: 3089,
+    comments: 201,
+    timestamp: "2 weeks ago",
+    mood: "romantic",
+    gradient: "from-purple-500/20 to-violet-600/20",
     border: "border-purple-500/30"
   },
   {
-    id: 3,
-    category: "Travel & Soul",
-    categoryIcon: <Globe className="w-4 h-4" />,
+    id: 6,
+    category: "Sach-e-Dil",
+    categoryIcon: <Feather className="w-4 h-4" />,
     categoryColor: "#22c55e",
-    hindi: "सफर करना है मुझे दुनिया के हर कोने को,\nहर राह, हर मोड़ पर नई कहानी सुनाना है।\nPahaadon की ऊँचाई हो या समंदर की गहराई,\nहर जगह कुछ नया सीखना और पाना है।",
-    english: "I wish to travel every corner of this world,\nAt every path, every turn, to share new tales.\nBe it the heights of mountains or ocean's depth,\nIn every place, something new learns and prevails.",
-    likes: 933,
-    comments: 71,
-    timestamp: "1 week ago",
-    mood: "wanderlust",
+    hindi: `Har kisi se ishq ho jaaye zaroori thodi hai,
+Jise tum chaho woh bhi tumhe chahe zaroori thodi hai.
+Kayi dafa mohabbat sirf ek tarfa hi hoti hai,
+Har kahani mukammal ho jaaye zaroori thodi hai.`,
+    english: `It's not necessary that love blooms with everyone you meet,
+It's not necessary that who you love, loves you back.
+Many times, love lives only on one side complete,
+It's not necessary that every story finds its way back.`,
+    likes: 1678,
+    comments: 89,
+    timestamp: "2 weeks ago",
+    mood: "truth",
     gradient: "from-green-500/20 to-emerald-600/20",
     border: "border-green-500/30"
   },
   {
-    id: 4,
+    id: 7,
+    category: "Kitaab-e-Dil",
+    categoryIcon: <Feather className="w-4 h-4" />,
+    categoryColor: "#d946ef",
+    hindi: `Likhne ko to ek din tum par poori kitaab likhu,
+Har lafz mein chhupa ek haseen sa khwaab likhu.
+Tumhari aankhon ko gehri si sharab likhu,
+Unmein doobta har pal apna hisaab likhu.
+
+Tumhe rani kahu aur khud ko tera nawab likhu,
+Tumhe har sawaal ka sabse khoobsurat jawab likhu.
+Tumhari zulfon ko gehra sa ek khwaab likhu,
+Unke saaye mein palta har ek mera jazbaat-e-hisaab likhu.
+
+Tumhare honton ko khilta hua gulaab likhu,
+Tumhara chehra roshan sa ek mahtaab likhu.
+Tumhari chaal ko halki si lehrati hawa likhu,
+Tumko har dard ki sabse asar-daar dawa likhu.
+Likhu tumhari wo baatein jo duniya ko pata nahi,
+Har sach ko mehfooz rakhkar ek pyaari si dua likhu.`,
+    english: `One day I'll write a whole book about you,
+Hiding a beautiful dream in every word I write.
+I'll call your eyes the deepest wine,
+And write the account of every moment I drown in their light.
+
+I'll call you queen and myself your king,
+I'll write you as the most beautiful answer to every question.
+Your hair — a deep dream I'd capture in verse,
+Every feeling that grew in their shadow — my finest expression.
+
+Your lips — a blooming rose I'd describe in rhyme,
+Your face — a glowing moon I'd paint in every line.
+Your walk — a light breeze swaying through the air,
+I'd write you as the most powerful cure to every despair.
+I'd write what the world doesn't know about you —
+And keeping every truth safe, write a loving prayer.`,
+    likes: 4127,
+    comments: 267,
+    timestamp: "3 weeks ago",
+    mood: "poetic",
+    gradient: "from-fuchsia-500/20 to-pink-600/20",
+    border: "border-fuchsia-500/30"
+  },
+  {
+    id: 8,
     category: "Late Night Hustle",
     categoryIcon: <Code2 className="w-4 h-4" />,
     categoryColor: "#f59e0b",
@@ -56,38 +237,38 @@ const shayariPosts = [
     english: "When the terminal opens in the dark of night,\nMorning arrives while debugging every flaw.\nThe logs weave a web of tangled errors tight,\nBut when console.log hints — life opens its door.",
     likes: 1567,
     comments: 124,
-    timestamp: "2 weeks ago",
+    timestamp: "1 month ago",
     mood: "humorous",
     gradient: "from-yellow-500/20 to-orange-600/20",
     border: "border-yellow-500/30"
   },
   {
-    id: 5,
+    id: 9,
     category: "Bahraich to Bengaluru",
-    categoryIcon: <Feather className="w-4 h-4" />,
+    categoryIcon: <Globe className="w-4 h-4" />,
     categoryColor: "#ef4444",
     hindi: "छोटे से गाँव से निकला था जब मैं,\nसपने बड़े थे, पर जेब थी खाली।\nIIT की धूप में तपा जब मैं,\nसोना बन गई मेरी हर एक रात काली।",
     english: "When I left from a small village long ago,\nDreams were big, but the pocket was bare.\nWhen tempered in IIT's relentless glow,\nEvery dark night turned golden — pure and rare.",
     likes: 2341,
     comments: 187,
-    timestamp: "3 weeks ago",
+    timestamp: "1 month ago",
     mood: "inspirational",
     gradient: "from-red-500/20 to-rose-600/20",
     border: "border-red-500/30"
   },
   {
-    id: 6,
-    category: "The Developer's Heart",
-    categoryIcon: <Feather className="w-4 h-4" />,
-    categoryColor: "#06b6d4",
-    hindi: "Deploy हो जाए तो दिल को सुकून मिलता है,\nCI/CD pipeline जब green हो, मुस्कुराहट आती है।\nCode review में जब 'LGTM' मिलता है,\nवो खुशी किसी shayari से कम नहीं होती है।",
-    english: "When deploy succeeds, peace fills the heart,\nWhen CI/CD pipeline turns green — a smile appears.\nWhen the code review says 'LGTM' from the start,\nThat joy equals any shayari through the years.",
-    likes: 1089,
-    comments: 95,
-    timestamp: "1 month ago",
-    mood: "joyful",
-    gradient: "from-cyan-500/20 to-teal-600/20",
-    border: "border-cyan-500/30"
+    id: 10,
+    category: "Startup Dreams",
+    categoryIcon: <Rocket className="w-4 h-4" />,
+    categoryColor: "#a855f7",
+    hindi: "Startup का सपना आँखों में पाला है,\nBillionaire बनना है, यह इरादा कमाल है।\nIIT की राहों पर चला जो सफर,\nवो नींव है जिस पर मेरा सारा जहाँ है।",
+    english: "I've nurtured the dream of a startup in my eyes,\nBeing a billionaire — this intention is extraordinary.\nThe journey on IIT's roads I once walked,\nIs the foundation on which my whole world lies.",
+    likes: 1204,
+    comments: 89,
+    timestamp: "2 months ago",
+    mood: "ambitious",
+    gradient: "from-purple-500/20 to-pink-600/20",
+    border: "border-purple-500/30"
   }
 ];
 
@@ -311,12 +492,12 @@ export default function Shayari() {
           <p className="text-sm text-muted-foreground">
             Follow on{" "}
             <a
-              href="https://www.instagram.com/vinodmaurya0410/"
+              href="https://www.instagram.com/im_vinod_maurya/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
             >
-              Instagram @vinodmaurya0410
+              Instagram @im_vinod_maurya
             </a>{" "}
             for more shayari &amp; life updates
           </p>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Github, ExternalLink } from "lucide-react";
+import TiltCard3D from "@/app/components/interactive/TiltCard3D";
 
 export default function Projects() {
   const projects = [
@@ -125,13 +126,12 @@ export default function Projects() {
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
           {projects.map((project, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               variants={projectVariants}
-              whileHover={{ y: -12, scale: 1.01 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
             >
-              <Card className="h-full project-card neon-border glass-card hover:shadow-[0_28px_90px_-32px_rgba(0,229,255,0.22)] transition-all duration-300">
+              <TiltCard3D maxTilt={10} glare scale={1.02} className="h-full">
+              <Card className="h-full project-card neon-border glass-card hover:shadow-[0_28px_90px_-32px_rgba(0,229,255,0.28)] transition-all duration-300" style={{ transformStyle: "preserve-3d" }}>
                 <div className="relative h-64">
                   <Image
                     src={project.image}
@@ -184,6 +184,7 @@ export default function Projects() {
                   </div>
                 </div>
               </Card>
+              </TiltCard3D>
             </motion.div>
           ))}
         </motion.div>

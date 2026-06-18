@@ -1488,89 +1488,115 @@ html *::after {
   cursor: none !important;
 }
 
-/* ── Center dot — large, ultra-bright ── */
+/* ── Center dot — MAXIMUM VISIBILITY ── */
 .gc-dot {
   position: fixed;
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 99999;
-  background: radial-gradient(circle at 35% 30%, #ffffff, #00e5ff);
+  z-index: 999999;
+  background: radial-gradient(circle at 30% 25%, #ffffff 0%, #a0f4ff 40%, #00e5ff 100%);
   box-shadow:
-    0 0 0 2px rgba(255,255,255,0.85),
-    0 0 10px  rgba(0,229,255,1),
-    0 0 22px  rgba(0,229,255,0.95),
-    0 0 45px  rgba(0,229,255,0.7),
-    0 0 80px  rgba(0,229,255,0.4),
-    0 0 120px rgba(0,229,255,0.15);
+    0 0 0 3px rgba(255,255,255,1),
+    0 0 0 5px rgba(0,229,255,0.7),
+    0 0 14px  rgba(0,229,255,1),
+    0 0 28px  rgba(0,229,255,1),
+    0 0 55px  rgba(0,229,255,0.85),
+    0 0 90px  rgba(0,229,255,0.6),
+    0 0 140px rgba(0,229,255,0.3);
   will-change: transform;
+  animation: dotPulse 1.8s ease-in-out infinite;
 }
 
-/* ── Outer ring — bigger, stronger ── */
+@keyframes dotPulse {
+  0%, 100% { box-shadow:
+    0 0 0 3px rgba(255,255,255,1),
+    0 0 0 5px rgba(0,229,255,0.7),
+    0 0 14px  rgba(0,229,255,1),
+    0 0 28px  rgba(0,229,255,1),
+    0 0 55px  rgba(0,229,255,0.85),
+    0 0 90px  rgba(0,229,255,0.6),
+    0 0 140px rgba(0,229,255,0.3); }
+  50% { box-shadow:
+    0 0 0 4px rgba(255,255,255,1),
+    0 0 0 7px rgba(0,229,255,0.9),
+    0 0 20px  rgba(0,229,255,1),
+    0 0 40px  rgba(0,229,255,1),
+    0 0 80px  rgba(0,229,255,0.95),
+    0 0 130px rgba(0,229,255,0.75),
+    0 0 200px rgba(0,229,255,0.4); }
+}
+
+/* ── Outer ring ── */
 .gc-ring {
   position: fixed;
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 99997;
-  border: 2px solid rgba(0,229,255,0.85);
+  z-index: 999997;
+  border: 2px solid rgba(0,229,255,0.9);
   box-shadow:
-    0 0 16px  rgba(0,229,255,0.6),
-    0 0 32px  rgba(0,229,255,0.35),
-    inset 0 0 20px rgba(0,229,255,0.12);
+    0 0 18px  rgba(0,229,255,0.7),
+    0 0 36px  rgba(0,229,255,0.45),
+    0 0 60px  rgba(0,229,255,0.2),
+    inset 0 0 24px rgba(0,229,255,0.15);
   will-change: transform;
-  transition: border-color 100ms ease, box-shadow 100ms ease;
+  transition: border-color 80ms ease, box-shadow 80ms ease;
 }
 
 /* ── Crosshair bars ── */
 .gc-bar {
   position: fixed;
   pointer-events: none;
-  z-index: 99998;
-  background: rgba(0,229,255,0.9);
+  z-index: 999998;
+  background: #00e5ff;
   box-shadow:
-    0 0 6px rgba(0,229,255,1),
-    0 0 12px rgba(0,229,255,0.7);
-  border-radius: 2px;
+    0 0 0 1px rgba(255,255,255,0.6),
+    0 0 8px  rgba(0,229,255,1),
+    0 0 18px rgba(0,229,255,0.9),
+    0 0 32px rgba(0,229,255,0.6);
+  border-radius: 3px;
   will-change: transform;
-  transition: background 100ms ease;
+  transition: background 80ms ease;
 }
 
 .gc-bar-top,
 .gc-bar-bottom {
-  width: 2px;
-  height: 10px;
+  width: 3px;
+  height: 18px;
 }
 
 .gc-bar-left,
 .gc-bar-right {
-  width: 10px;
-  height: 2px;
+  width: 18px;
+  height: 3px;
 }
 
-/* click flash: bars turn magenta */
+/* click flash */
 .gc-bar-click {
-  background: rgba(168,85,247,0.95) !important;
+  background: #d946ef !important;
   box-shadow:
-    0 0 8px rgba(168,85,247,1),
-    0 0 18px rgba(168,85,247,0.8) !important;
+    0 0 0 1px rgba(255,255,255,0.8),
+    0 0 10px rgba(217,70,239,1),
+    0 0 22px rgba(217,70,239,0.9),
+    0 0 40px rgba(217,70,239,0.6) !important;
 }
 
-/* ── Click animation ── */
+/* ── Click ring burst ── */
 .gc-ring-click {
-  border-color: rgba(168,85,247,0.95) !important;
+  border-color: rgba(217,70,239,0.95) !important;
   box-shadow:
-    0 0 24px rgba(168,85,247,0.8),
-    0 0 48px rgba(168,85,247,0.4),
-    inset 0 0 20px rgba(168,85,247,0.18) !important;
+    0 0 28px rgba(217,70,239,0.9),
+    0 0 56px rgba(217,70,239,0.5),
+    inset 0 0 24px rgba(217,70,239,0.2) !important;
   animation: ringClickPulse 380ms ease-out forwards !important;
 }
 
 @keyframes ringClickPulse {
   0%   { transform: translate(var(--tx,0), var(--ty,0)) scale(1);    opacity: 1; }
-  50%  { transform: translate(var(--tx,0), var(--ty,0)) scale(1.65); opacity: 0.6; }
+  50%  { transform: translate(var(--tx,0), var(--ty,0)) scale(1.8);  opacity: 0.5; }
   100% { transform: translate(var(--tx,0), var(--ty,0)) scale(1);    opacity: 1; }
 }
 

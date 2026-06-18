@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { Briefcase, Calendar, MapPin, Rocket, Monitor } from "lucide-react";
+import TiltCard3D from "@/app/components/interactive/TiltCard3D";
 
 export default function Experience() {
   const experiences = [
@@ -301,6 +302,7 @@ export default function Experience() {
               onHoverEnd={() => setHoverIndex(null)}
               whileHover={{ y: -5, transition: { duration: 0.3 } }}
             >
+              <TiltCard3D maxTilt={7} glare scale={1.01}>
               <motion.div
                 className="exp-timeline-container"
                 style={{
@@ -398,6 +400,7 @@ export default function Experience() {
                   />
                 )}
               </motion.div>
+              </TiltCard3D>
             </motion.div>
           ))}
         </motion.div>

@@ -249,16 +249,16 @@ export default function GameCursor() {
         ctx.fill();
       }
 
-      // ── DOM cursor update ──
+      // ── DOM cursor update ── (dot=28px so offset=14; bars=18px; ring=72px so offset=36)
       const ringScale = Math.max(0.8, 1.3 - moveSpeed * 0.012);
-      dot.style.transform = `translate(${mx - 10}px, ${my - 10}px)`;
-      ring.style.transform = `translate(${lerpX - 32}px, ${lerpY - 32}px) scale(${ringScale})`;
+      dot.style.transform = `translate(${mx - 14}px, ${my - 14}px)`;
+      ring.style.transform = `translate(${lerpX - 36}px, ${lerpY - 36}px) scale(${ringScale})`;
 
-      // crosshair bars follow dot exactly
-      barTop.style.transform    = `translate(${mx - 1}px, ${my - 26}px)`;
-      barBottom.style.transform = `translate(${mx - 1}px, ${my + 14}px)`;
-      barLeft.style.transform   = `translate(${mx - 26}px, ${my - 1}px)`;
-      barRight.style.transform  = `translate(${mx + 14}px, ${my - 1}px)`;
+      // crosshair bars: gap=4px from dot edge (14px), bar length=18px
+      barTop.style.transform    = `translate(${mx - 1.5}px, ${my - 36}px)`;
+      barBottom.style.transform = `translate(${mx - 1.5}px, ${my + 18}px)`;
+      barLeft.style.transform   = `translate(${mx - 36}px, ${my - 1.5}px)`;
+      barRight.style.transform  = `translate(${mx + 18}px, ${my - 1.5}px)`;
 
       raf = requestAnimationFrame(render);
     }
