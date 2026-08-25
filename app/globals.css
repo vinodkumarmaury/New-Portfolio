@@ -2262,3 +2262,78 @@ input:focus, textarea:focus {
 
 /* Noto Sans Devanagari for Hindi text */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&display=swap');
+
+/* ═══════════════════════════════════════════════
+   CONSOLE AMBIENCE — BACKGROUND REFINEMENT
+   The canvas (GamingBackground) now owns the light,
+   depth and motion. These CSS layers step back so
+   the stack reads as one deliberate scene instead of
+   four competing glows.
+   ═══════════════════════════════════════════════ */
+
+body {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(0,229,255,0.10), transparent 60%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(168,85,247,0.08), transparent 60%),
+    linear-gradient(180deg, hsl(228 52% 6%) 0%, hsl(230 55% 4%) 55%, hsl(232 60% 3%) 100%) !important;
+}
+
+/* Fine console grid — tighter, cooler, quieter */
+body::before {
+  background-image:
+    linear-gradient(rgba(0,229,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.035) 1px, transparent 1px) !important;
+  background-size: 64px 64px !important;
+  animation: gridPulse 14s ease-in-out infinite !important;
+  mask-image: linear-gradient(180deg, black 0%, rgba(0,0,0,0.35) 55%, transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(180deg, black 0%, rgba(0,0,0,0.35) 55%, transparent 100%) !important;
+  opacity: 0.7;
+}
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+}
+
+/* Energy blobs become soft depth, not haze */
+.bg-blob {
+  background: radial-gradient(circle, rgba(0,229,255,0.13), rgba(168,85,247,0.07), transparent 72%) !important;
+  filter: blur(110px) !important;
+  opacity: 0.5 !important;
+  animation: blobDrift 26s ease-in-out infinite alternate !important;
+}
+
+.game-shell::before {
+  background:
+    radial-gradient(circle at 18% 6%, rgba(0,229,255,0.07), transparent 34%),
+    radial-gradient(circle at 82% 12%, rgba(168,85,247,0.07), transparent 32%) !important;
+  filter: blur(14px) !important;
+}
+
+.hero-beam {
+  background: radial-gradient(circle, rgba(0,229,255,0.12), transparent 66%) !important;
+  filter: blur(28px) !important;
+}
+
+.hero-grid-line {
+  background-image:
+    linear-gradient(rgba(0,229,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.06) 1px, transparent 1px) !important;
+  background-size: 88px 88px !important;
+  opacity: 0.35 !important;
+  mask-image: radial-gradient(ellipse 65% 60% at 50% 45%, transparent 20%, black 100%) !important;
+  -webkit-mask-image: radial-gradient(ellipse 65% 60% at 50% 45%, transparent 20%, black 100%) !important;
+}
+
+.hero-particle {
+  box-shadow: 0 0 10px rgba(0,229,255,0.55) !important;
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-blob,
+  .hero-beam,
+  body::before {
+    animation: none !important;
+  }
+}

@@ -2,350 +2,582 @@
 
 import { useEffect, useRef } from "react";
 
-// PS-symbol paths (relative to a 40x40 box centred at 0,0)
-function drawCross(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, alpha: number, color: string) {
-  const s = size * 0.38;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = s * 0.28;
+/* ═══════════════════════════════════════════════════════════════
+   PS5-INSPIRED AMBIENT BACKGROUND
+
+   Design rule: everything decorative lives in the side gutters or
+   below the fold line. The centre column — where the content is —
+   stays calm so text always reads first.
+
+   Layers (back → front)
+     1. Volumetric light pools    — slow breathing console ambience
+     2. Perspective horizon grid  — game-world depth, scroll-reactive
+     3. Hex mesh                  — far HUD texture, edge-weighted
+     4. PlayStation symbols       — upright, drifting, gutters only
+     5. Circuit traces            — data streams down the gutters
+     6. Scan sweep + calm mask    — readability pass
+   ═══════════════════════════════════════════════════════════════ */
+
+const CYAN = [0, 229, 255] as const;
+const VIOLET = [168, 85, 247] as const;
+const GREEN = [34, 197, 94] as const;
+const AMBER = [251, 191, 36] as const;
+
+type RGB = readonly [number, number, number];
+
+const rgba = (c: RGB, a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+const smoothstep = (edge0: number, edge1: number, x: number) => {
+  const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+};
+
+type SymType = "cross" | "circle" | "triangle" | "square";
+
+/** Authentic PlayStation face-button colour mapping, tuned to the site palette. */
+const SYM_COLORS: Record<SymType, RGB> = {
+  cross: CYAN,
+  circle: AMBER,
+  triangle: GREEN,
+  square: VIOLET,
+};
+
+/** Draws a face-button glyph centred on the current origin. Always upright. */
+function drawSymbol(ctx: CanvasRenderingContext2D, type: SymType, size: number) {
+  const s = size / 2;
   ctx.lineCap = "round";
-  // × (cross)
-  ctx.beginPath();
-  ctx.moveTo(-s, -s); ctx.lineTo(s, s);
-  ctx.moveTo(s, -s);  ctx.lineTo(-s, s);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawCircle(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, alpha: number, color: string) {
-  const s = size * 0.38;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = s * 0.22;
-  ctx.beginPath();
-  ctx.arc(0, 0, s, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawTriangle(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, alpha: number, color: string) {
-  const s = size * 0.42;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = s * 0.2;
   ctx.lineJoin = "round";
   ctx.beginPath();
-  ctx.moveTo(0, -s);
-  ctx.lineTo(s * 0.87, s * 0.5);
-  ctx.lineTo(-s * 0.87, s * 0.5);
-  ctx.closePath();
+
+  switch (type) {
+    case "cross": {
+      const k = s * 0.7;
+      ctx.moveTo(-k, -k);
+      ctx.lineTo(k, k);
+      ctx.moveTo(k, -k);
+      ctx.lineTo(-k, k);
+      break;
+    }
+    case "circle":
+      ctx.arc(0, 0, s * 0.78, 0, Math.PI * 2);
+      break;
+    case "triangle": {
+      const r = s * 0.92;
+      ctx.moveTo(0, -r);
+      ctx.lineTo(r * 0.866, r * 0.52);
+      ctx.lineTo(-r * 0.866, r * 0.52);
+      ctx.closePath();
+      break;
+    }
+    case "square": {
+      const k = s * 0.66;
+      ctx.rect(-k, -k, k * 2, k * 2);
+      break;
+    }
+  }
+
   ctx.stroke();
-  ctx.restore();
 }
 
-function drawSquare(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, alpha: number, color: string) {
-  const s = size * 0.36;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(Math.PI / 4); // diamond orientation
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = s * 0.2;
-  ctx.lineJoin = "round";
-  ctx.strokeRect(-s * 0.72, -s * 0.72, s * 1.44, s * 1.44);
-  ctx.restore();
-}
-
-function drawHex(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, alpha: number, color: string, fill = false) {
-  const s = size * 0.5;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = fill ? 0 : s * 0.08;
+function pathHex(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
     const a = (i * Math.PI) / 3 - Math.PI / 6;
-    i === 0 ? ctx.moveTo(Math.cos(a) * s, Math.sin(a) * s) : ctx.lineTo(Math.cos(a) * s, Math.sin(a) * s);
+    const px = x + Math.cos(a) * r;
+    const py = y + Math.sin(a) * r;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
   }
   ctx.closePath();
-  if (fill) {
-    ctx.fillStyle = color;
-    ctx.fill();
-  } else {
-    ctx.stroke();
-  }
-  ctx.restore();
 }
 
 export default function GamingBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
 
-    const canvas = canvasRef.current!;
-    const ctx = canvas.getContext("2d")!;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let W = window.innerWidth;
     let H = window.innerHeight;
-    canvas.width = W;
-    canvas.height = H;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    let mx = W / 2, my = H / 2;
-    let scrollY = 0;
+    /* ── Content safe zone ───────────────────────────────────────
+       Mirrors the `max-w-7xl` (1280px) content column. Decoration
+       fades out before it reaches the text.                       */
+    let contentHalf = 0;
+    let gutterStart = 0;
+    let gutterFull = 0;
 
-    // ── Floating dot network ───────────────────────────
-    const COUNT = 90;
-    const MAX_DIST = 150;
+    const measure = () => {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    interface Dot {
-      x: number; y: number;
-      vx: number; vy: number;
-      r: number; pulse: number; pulseSpeed: number;
-    }
-
-    const dots: Dot[] = Array.from({ length: COUNT }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      r: 0.8 + Math.random() * 1.8,
-      pulse: Math.random() * Math.PI * 2,
-      pulseSpeed: 0.018 + Math.random() * 0.035,
-    }));
-
-    // ── PS floating symbols ────────────────────────────
-    type SymType = "cross" | "circle" | "triangle" | "square" | "hex";
-    const SYM_COLORS: Record<SymType, string> = {
-      cross:    "rgba(0,229,255,1)",
-      circle:   "rgba(251,191,36,1)",
-      triangle: "rgba(168,85,247,1)",
-      square:   "rgba(34,197,94,1)",
-      hex:      "rgba(0,229,255,0.7)",
+      contentHalf = Math.min(W * 0.5, 660);
+      gutterStart = contentHalf * 0.68;
+      gutterFull = contentHalf * 1.02;
     };
 
-    interface Symbol {
-      x: number; y: number;
+    measure();
+
+    /** 0 over the content column, 1 out in the gutters. */
+    const gutter = (x: number) => smoothstep(gutterStart, gutterFull, Math.abs(x - W / 2));
+    /** Keeps decoration clear of the fixed navbar and the very bottom edge. */
+    const verticalFade = (y: number) => smoothstep(60, 170, y) * (1 - smoothstep(H - 90, H + 10, y));
+
+    // ── Pointer / scroll state (smoothed) ──────────────────────
+    let mx = W / 2;
+    let my = H * 0.35;
+    let px = 0; // -0.5 … 0.5
+    let py = 0;
+    let pxs = 0;
+    let pys = 0;
+    let scrollY = 0;
+    let scrollSmooth = 0;
+
+    // ── 1. Volumetric light pools ──────────────────────────────
+    const pools = [
+      { c: CYAN, ox: 0.16, oy: 0.1, ax: 0.07, ay: 0.05, sp: 0.055, ph: 0, r: 0.62, a: 0.1 },
+      { c: VIOLET, ox: 0.85, oy: 0.14, ax: 0.06, ay: 0.06, sp: 0.043, ph: 2.1, r: 0.58, a: 0.09 },
+      { c: GREEN, ox: 0.55, oy: 0.86, ax: 0.09, ay: 0.04, sp: 0.032, ph: 4.2, r: 0.5, a: 0.05 },
+    ];
+
+    // ── 3. Hex mesh ────────────────────────────────────────────
+    interface Hex {
+      x: number;
+      y: number;
+      r: number;
+      phase: number;
+      c: RGB;
+    }
+    let hexes: Hex[] = [];
+
+    const buildHexes = () => {
+      hexes = [];
+      const r = Math.max(46, Math.min(78, W / 22));
+      const stepX = r * 1.74;
+      const stepY = r * 1.5;
+      const palette: RGB[] = [CYAN, VIOLET, GREEN];
+      for (let row = -1; row * stepY < H + stepY; row++) {
+        for (let col = -1; col * stepX < W + stepX; col++) {
+          const x = col * stepX + (row % 2 ? stepX / 2 : 0);
+          const y = row * stepY;
+          hexes.push({
+            x,
+            y,
+            r,
+            phase: (col * 0.7 + row * 1.3) % (Math.PI * 2),
+            c: palette[(col + row * 2 + 30) % 3],
+          });
+        }
+      }
+    };
+    buildHexes();
+
+    // ── 4. PlayStation symbols ─────────────────────────────────
+    interface Sym {
+      x: number;
+      y: number;
       type: SymType;
       size: number;
-      alpha: number; targetAlpha: number;
-      rot: number; rotSpeed: number;
-      vx: number; vy: number;
-      driftX: number; driftY: number; driftPhase: number; driftAmp: number;
-      layer: number; // 0 = far, 1 = mid, 2 = close
+      layer: 0 | 1 | 2;
+      alpha: number;
+      target: number;
+      vy: number;
+      swayPhase: number;
+      swayAmp: number;
+      tiltPhase: number;
+      life: number;
+      span: number;
     }
 
-    function makeSymbol(): Symbol {
-      const types: SymType[] = ["cross", "circle", "triangle", "square", "hex"];
-      const type = types[Math.floor(Math.random() * types.length)];
-      const layer = Math.floor(Math.random() * 3);
-      const size = layer === 0 ? 12 + Math.random() * 10 : layer === 1 ? 20 + Math.random() * 16 : 30 + Math.random() * 20;
-      return {
-        x: Math.random() * W,
-        y: Math.random() * H,
-        type, size,
-        alpha: 0,
-        targetAlpha: (layer === 0 ? 0.06 : layer === 1 ? 0.12 : 0.2) + Math.random() * 0.06,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.006,
-        vx: (Math.random() - 0.5) * (layer === 0 ? 0.1 : 0.2),
-        vy: -0.12 - Math.random() * 0.15 * (layer + 1),
-        driftX: 0, driftY: 0,
-        driftPhase: Math.random() * Math.PI * 2,
-        driftAmp: 0.3 + Math.random() * 0.5,
-        layer,
-      };
-    }
+    const TYPES: SymType[] = ["cross", "circle", "triangle", "square"];
+    const LAYER_ALPHA = [0.055, 0.095, 0.15];
 
-    const symbols: Symbol[] = Array.from({ length: 28 }, makeSymbol);
-
-    // ── Volumetric scan lines ──────────────────────────
-    let scanLine = 0;
-
-    // ── Hex grid tiles (static, far background) ────────
-    const hexTiles: { x: number; y: number; phase: number; color: string }[] = [];
-    const HEX_COLS = 12, HEX_ROWS = 7;
-    const HEX_W = W / HEX_COLS;
-    const HEX_H = H / HEX_ROWS;
-    const hexColors = ["rgba(0,229,255,", "rgba(168,85,247,", "rgba(34,197,94,"];
-    for (let row = 0; row < HEX_ROWS + 1; row++) {
-      for (let col = 0; col < HEX_COLS + 1; col++) {
-        const offset = row % 2 === 0 ? 0 : HEX_W / 2;
-        hexTiles.push({
-          x: col * HEX_W + offset,
-          y: row * HEX_H,
-          phase: Math.random() * Math.PI * 2,
-          color: hexColors[Math.floor(Math.random() * hexColors.length)],
-        });
-      }
-    }
-
-    // ── Events ─────────────────────────────────────────
-    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
-    const onScroll = () => { scrollY = window.scrollY; };
-    const onResize = () => {
-      W = window.innerWidth; H = window.innerHeight;
-      canvas.width = W; canvas.height = H;
+    const spawnX = () => {
+      const side = Math.random() < 0.5 ? -1 : 1;
+      const band = Math.max(60, W / 2 - gutterStart);
+      return W / 2 + side * (gutterStart + Math.random() * band);
     };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("scroll", onScroll);
+
+    const makeSym = (seedY?: number): Sym => {
+      const layer = Math.floor(Math.random() * 3) as 0 | 1 | 2;
+      const size = layer === 0 ? 16 + Math.random() * 8 : layer === 1 ? 26 + Math.random() * 12 : 40 + Math.random() * 22;
+      const span = 620 + Math.random() * 520;
+      return {
+        x: spawnX(),
+        y: seedY ?? H + size,
+        type: TYPES[Math.floor(Math.random() * TYPES.length)],
+        size,
+        layer,
+        alpha: 0,
+        target: LAYER_ALPHA[layer] * (0.75 + Math.random() * 0.5),
+        vy: -(0.09 + layer * 0.05 + Math.random() * 0.05),
+        swayPhase: Math.random() * Math.PI * 2,
+        swayAmp: 6 + Math.random() * 14,
+        tiltPhase: Math.random() * Math.PI * 2,
+        life: Math.random() * span,
+        span,
+      };
+    };
+
+    let symbols: Sym[] = [];
+    let traces: Trace[] = [];
+
+    // ── 5. Circuit traces ──────────────────────────────────────
+    interface Trace {
+      x: number;
+      y: number;
+      len: number;
+      speed: number;
+      alpha: number;
+      c: RGB;
+    }
+
+    const makeTrace = (seed = false): Trace => ({
+      x: Math.round(spawnX()),
+      y: seed ? Math.random() * H : -Math.random() * H * 0.6,
+      len: 90 + Math.random() * 220,
+      speed: 0.8 + Math.random() * 1.9,
+      alpha: 0.1 + Math.random() * 0.18,
+      c: Math.random() < 0.72 ? CYAN : VIOLET,
+    });
+
+    const buildAgents = () => {
+      const mobile = W < 768;
+      const symCount = mobile ? 8 : W < 1280 ? 14 : 20;
+      const traceCount = mobile ? 3 : W < 1280 ? 5 : 8;
+      symbols = Array.from({ length: symCount }, () => makeSym(Math.random() * H));
+      traces = Array.from({ length: traceCount }, () => makeTrace(true));
+    };
+    buildAgents();
+
+    // ── Events ─────────────────────────────────────────────────
+    const onMove = (e: MouseEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
+      px = mx / W - 0.5;
+      py = my / H - 0.5;
+    };
+    const onScroll = () => {
+      scrollY = window.scrollY;
+    };
+    let resizeTimer: number | undefined;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        measure();
+        buildHexes();
+        buildAgents();
+        if (reduced) render(0);
+      }, 140);
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
 
-    let raf: number;
-    let frame = 0;
+    // ── Render ─────────────────────────────────────────────────
+    let scan = 0;
 
-    function animate(now: number) {
-      frame++;
-      ctx.clearRect(0, 0, W, H);
+    function render(t: number) {
+      ctx!.clearRect(0, 0, W, H);
 
-      const t = now * 0.001;
+      pxs += (px - pxs) * 0.045;
+      pys += (py - pys) * 0.045;
+      scrollSmooth += (scrollY - scrollSmooth) * 0.08;
 
-      // ── 1. Far hex grid (very subtle, pulsing) ──────
-      hexTiles.forEach(h => {
-        const pulse = 0.018 + Math.sin(t * 0.4 + h.phase) * 0.012;
+      ctx!.globalCompositeOperation = "lighter";
+
+      /* ── 1. Volumetric light pools ───────────────────────── */
+      for (const p of pools) {
+        const cx = W * p.ox + Math.sin(t * p.sp + p.ph) * W * p.ax + pxs * 26;
+        const cy = H * p.oy + Math.cos(t * p.sp * 0.8 + p.ph) * H * p.ay + pys * 18;
+        const r = Math.max(W, H) * p.r;
+        const breathe = 0.8 + Math.sin(t * 0.22 + p.ph) * 0.2;
+        const g = ctx!.createRadialGradient(cx, cy, 0, cx, cy, r);
+        g.addColorStop(0, rgba(p.c, p.a * breathe));
+        g.addColorStop(0.42, rgba(p.c, p.a * breathe * 0.28));
+        g.addColorStop(1, rgba(p.c, 0));
+        ctx!.fillStyle = g;
+        ctx!.fillRect(0, 0, W, H);
+      }
+
+      /* ── 2. Perspective horizon grid ─────────────────────── */
+      const horizon = H * 0.68;
+      const depth = H - horizon;
+      const vpX = W / 2 + pxs * 46;
+
+      ctx!.save();
+      ctx!.translate(0, pys * 8);
+      ctx!.lineWidth = 1;
+
+      // converging rails
+      const RAILS = 22;
+      for (let i = -RAILS; i <= RAILS; i++) {
+        const bx = W / 2 + (i / RAILS) * W * 1.35;
+        const edge = smoothstep(0.12, 0.85, Math.abs(i) / RAILS);
+        const a = 0.035 + edge * 0.055;
+        const g = ctx!.createLinearGradient(0, horizon, 0, H);
+        g.addColorStop(0, rgba(CYAN, 0));
+        g.addColorStop(1, rgba(CYAN, a));
+        ctx!.strokeStyle = g;
+        ctx!.beginPath();
+        ctx!.moveTo(vpX, horizon);
+        ctx!.lineTo(bx, H);
+        ctx!.stroke();
+      }
+
+      // forward-scrolling rungs — speed reacts to page scroll
+      const ROWS = 13;
+      const phase = ((t * 0.045 + scrollSmooth * 0.0009) % 1 + 1) % 1;
+      for (let i = 0; i < ROWS; i++) {
+        const p = (i / ROWS + phase) % 1;
+        const y = horizon + depth * p * p * p;
+        const a = p * 0.075;
+        const g = ctx!.createLinearGradient(0, 0, W, 0);
+        g.addColorStop(0, rgba(CYAN, a));
+        g.addColorStop(0.5, rgba(CYAN, a * 0.22));
+        g.addColorStop(1, rgba(CYAN, a));
+        ctx!.strokeStyle = g;
+        ctx!.beginPath();
+        ctx!.moveTo(0, y);
+        ctx!.lineTo(W, y);
+        ctx!.stroke();
+      }
+
+      // horizon glow
+      const hg = ctx!.createLinearGradient(0, horizon - 90, 0, horizon + 4);
+      hg.addColorStop(0, rgba(CYAN, 0));
+      hg.addColorStop(1, rgba(CYAN, 0.05));
+      ctx!.fillStyle = hg;
+      ctx!.fillRect(0, horizon - 90, W, 94);
+      ctx!.restore();
+
+      /* ── 3. Hex mesh ─────────────────────────────────────── */
+      ctx!.save();
+      ctx!.translate(pxs * 10, pys * 6 - (scrollSmooth * 0.012) % 90);
+      ctx!.lineWidth = 1;
+      for (const h of hexes) {
+        const g = gutter(h.x + pxs * 10);
+        const edgeY = 1 - smoothstep(H * 0.18, H * 0.6, h.y);
+        const weight = Math.max(g * 0.85, edgeY * 0.5);
+        if (weight < 0.03) continue;
+        const pulse = 0.5 + Math.sin(t * 0.5 + h.phase) * 0.5;
         const dist = Math.hypot(h.x - mx, h.y - my);
-        const mouseBoost = Math.max(0, (1 - dist / 350)) * 0.025;
-        drawHex(ctx, h.x, h.y, HEX_W * 0.48, pulse + mouseBoost, h.color + (pulse + mouseBoost).toFixed(3) + ")");
-      });
+        const focus = Math.max(0, 1 - dist / 320);
+        const a = weight * (0.016 + pulse * 0.012) + focus * 0.05;
+        ctx!.strokeStyle = rgba(h.c, a);
+        pathHex(ctx!, h.x, h.y, h.r);
+        ctx!.stroke();
+      }
+      ctx!.restore();
 
-      // ── 2. Dot network ─────────────────────────────
-      for (const d of dots) {
-        d.pulse += d.pulseSpeed;
-        d.x += d.vx; d.y += d.vy;
-        if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
-        if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
-
-        const dx = d.x - mx, dy = d.y - my;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 120 && dist > 0) {
-          const force = (1 - dist / 120) * 0.28;
-          d.vx += (dx / dist) * force * 0.5;
-          d.vy += (dy / dist) * force * 0.5;
+      /* ── 5. Circuit traces (behind the symbols) ──────────── */
+      for (const tr of traces) {
+        tr.y += tr.speed;
+        if (tr.y - tr.len > H) {
+          Object.assign(tr, makeTrace());
+          continue;
         }
-        d.vx *= 0.993; d.vy *= 0.993;
-        const s = Math.hypot(d.vx, d.vy);
-        if (s > 1.5) { d.vx *= 1.5 / s; d.vy *= 1.5 / s; }
+        const w = gutter(tr.x) * verticalFade(tr.y);
+        if (w < 0.04) continue;
+        const top = tr.y - tr.len;
+        const g = ctx!.createLinearGradient(0, top, 0, tr.y);
+        g.addColorStop(0, rgba(tr.c, 0));
+        g.addColorStop(1, rgba(tr.c, tr.alpha * w));
+        ctx!.strokeStyle = g;
+        ctx!.lineWidth = 1;
+        ctx!.beginPath();
+        ctx!.moveTo(tr.x, top);
+        ctx!.lineTo(tr.x, tr.y);
+        ctx!.stroke();
 
-        const br = 0.45 + Math.sin(d.pulse) * 0.28;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,229,255,${br * 0.75})`;
-        ctx.fill();
+        ctx!.fillStyle = rgba(tr.c, Math.min(0.55, tr.alpha * 2.6 * w));
+        ctx!.beginPath();
+        ctx!.arc(tr.x, tr.y, 1.4, 0, Math.PI * 2);
+        ctx!.fill();
       }
 
-      for (let i = 0; i < dots.length; i++) {
-        for (let j = i + 1; j < dots.length; j++) {
-          const dx = dots[i].x - dots[j].x;
-          const dy = dots[i].y - dots[j].y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < MAX_DIST) {
-            const alpha = (1 - dist / MAX_DIST) * 0.22;
-            const midX = (dots[i].x + dots[j].x) / 2 - mx;
-            const midY = (dots[i].y + dots[j].y) / 2 - my;
-            const mp = Math.max(0, 1 - Math.hypot(midX, midY) / 280);
-            ctx.beginPath();
-            ctx.moveTo(dots[i].x, dots[i].y);
-            ctx.lineTo(dots[j].x, dots[j].y);
-            ctx.strokeStyle = `rgba(${Math.round(168 * mp)},${Math.round(229 - 144 * mp)},255,${alpha})`;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
+      /* ── 4. PlayStation symbols ──────────────────────────── */
+      for (let i = 0; i < symbols.length; i++) {
+        const s = symbols[i];
+        s.life += 1;
+        s.y += s.vy;
+
+        if (s.y < -s.size * 2 || s.life > s.span) {
+          symbols[i] = makeSym();
+          continue;
         }
+
+        // fade in on entry, out on exit
+        const inT = smoothstep(0, 90, s.life);
+        const outT = 1 - smoothstep(s.span - 120, s.span, s.life);
+        s.alpha += (s.target * inT * outT - s.alpha) * 0.04;
+
+        const x = s.x + Math.sin(t * 0.35 + s.swayPhase) * s.swayAmp + pxs * (6 + s.layer * 9);
+        const y = s.y + pys * (4 + s.layer * 6);
+        const w = gutter(x) * verticalFade(y);
+        const a = s.alpha * w;
+        if (a < 0.004) continue;
+
+        const color = s.layer === 2 ? SYM_COLORS[s.type] : CYAN;
+
+        ctx!.save();
+        ctx!.translate(x, y);
+        ctx!.rotate(Math.sin(t * 0.28 + s.tiltPhase) * 0.06); // ±3.5° breathing tilt
+        ctx!.strokeStyle = rgba(color, a);
+        ctx!.lineWidth = Math.max(1.2, s.size * 0.075);
+        ctx!.shadowColor = rgba(color, a * 0.9);
+        ctx!.shadowBlur = s.size * 0.45;
+        drawSymbol(ctx!, s.type, s.size);
+        ctx!.restore();
       }
+      ctx!.shadowBlur = 0;
 
-      // ── 3. PS-style floating symbols ───────────────
-      symbols.forEach((sym, idx) => {
-        // Drift
-        sym.x += sym.vx + Math.sin(t * 0.5 + sym.driftPhase) * sym.driftAmp * 0.02;
-        sym.y += sym.vy + Math.cos(t * 0.4 + sym.driftPhase) * sym.driftAmp * 0.015;
-        sym.rot += sym.rotSpeed;
+      /* ── 6a. Scan sweep ──────────────────────────────────── */
+      scan = (scan + 0.55) % (H + 260);
+      const sy = scan - 130;
+      const sg = ctx!.createLinearGradient(0, sy - 130, 0, sy + 130);
+      sg.addColorStop(0, rgba(CYAN, 0));
+      sg.addColorStop(0.5, rgba(CYAN, 0.022));
+      sg.addColorStop(1, rgba(CYAN, 0));
+      ctx!.fillStyle = sg;
+      ctx!.fillRect(0, sy - 130, W, 260);
 
-        // Respawn at bottom if off top
-        if (sym.y < -sym.size * 2) {
-          sym.y = H + sym.size;
-          sym.x = Math.random() * W;
-          sym.alpha = 0;
-        }
-        if (sym.x < -sym.size * 2) sym.x = W + sym.size;
-        if (sym.x > W + sym.size * 2) sym.x = -sym.size;
+      /* ── 6b. Calm mask — settles everything behind content ── */
+      ctx!.globalCompositeOperation = "source-over";
 
-        // Fade in/out
-        sym.alpha += (sym.targetAlpha - sym.alpha) * 0.02;
-        if (frame % 300 === idx % 300) {
-          sym.targetAlpha = sym.alpha > 0.05
-            ? 0
-            : (sym.layer === 0 ? 0.06 : sym.layer === 1 ? 0.12 : 0.2) + Math.random() * 0.06;
-        }
+      const calm = ctx!.createRadialGradient(W / 2, H * 0.48, 0, W / 2, H * 0.48, contentHalf * 1.5);
+      calm.addColorStop(0, "rgba(3,6,18,0.34)");
+      calm.addColorStop(0.62, "rgba(3,6,18,0.16)");
+      calm.addColorStop(1, "rgba(3,6,18,0)");
+      ctx!.fillStyle = calm;
+      ctx!.fillRect(0, 0, W, H);
 
-        const color = SYM_COLORS[sym.type];
-
-        ctx.save();
-        ctx.translate(sym.x, sym.y);
-        ctx.rotate(sym.rot);
-        ctx.globalAlpha = sym.alpha;
-
-        switch (sym.type) {
-          case "cross":    drawCross(ctx, 0, 0, sym.size, 1, color); break;
-          case "circle":   drawCircle(ctx, 0, 0, sym.size, 1, color); break;
-          case "triangle": drawTriangle(ctx, 0, 0, sym.size, 1, color); break;
-          case "square":   drawSquare(ctx, 0, 0, sym.size, 1, color); break;
-          case "hex":      drawHex(ctx, 0, 0, sym.size, 1, color); break;
-        }
-
-        ctx.restore();
-      });
-
-      // ── 4. Volumetric scan line ─────────────────────
-      scanLine = (scanLine + 0.6) % H;
-      const scanGrad = ctx.createLinearGradient(0, scanLine - 40, 0, scanLine + 40);
-      scanGrad.addColorStop(0, "rgba(0,229,255,0)");
-      scanGrad.addColorStop(0.5, "rgba(0,229,255,0.025)");
-      scanGrad.addColorStop(1, "rgba(0,229,255,0)");
-      ctx.fillStyle = scanGrad;
-      ctx.fillRect(0, scanLine - 40, W, 80);
-
-      // ── 5. Mouse light cone ─────────────────────────
-      const coneGrad = ctx.createRadialGradient(mx, my, 0, mx, my, 350);
-      coneGrad.addColorStop(0, "rgba(0,229,255,0.038)");
-      coneGrad.addColorStop(0.5, "rgba(168,85,247,0.012)");
-      coneGrad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = coneGrad;
-      ctx.fillRect(0, 0, W, H);
-
-      // ── 6. Corner vignette ─────────────────────────
-      if (frame % 3 === 0) {
-        const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.85);
-        vg.addColorStop(0, "rgba(0,0,0,0)");
-        vg.addColorStop(1, "rgba(0,0,0,0.35)");
-        ctx.fillStyle = vg;
-        ctx.fillRect(0, 0, W, H);
-      }
-
-      raf = requestAnimationFrame(animate);
+      const vig = ctx!.createRadialGradient(W / 2, H / 2, H * 0.34, W / 2, H / 2, H * 0.95);
+      vig.addColorStop(0, "rgba(0,0,0,0)");
+      vig.addColorStop(1, "rgba(0,0,0,0.42)");
+      ctx!.fillStyle = vig;
+      ctx!.fillRect(0, 0, W, H);
     }
 
-    raf = requestAnimationFrame(animate);
+    // ── Loop ───────────────────────────────────────────────────
+    let raf = 0;
+    let running = true;
+
+    const loop = (now: number) => {
+      render(now * 0.001);
+      raf = requestAnimationFrame(loop);
+    };
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (running) {
+          cancelAnimationFrame(raf);
+          running = false;
+        }
+      } else if (!running && !reduced) {
+        running = true;
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    if (reduced) {
+      running = false;
+      render(0);
+    } else {
+      raf = requestAnimationFrame(loop);
+    }
 
     return () => {
       cancelAnimationFrame(raf);
+      window.clearTimeout(resizeTimer);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: -1 }}
+    <>
+      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none" style={{ zIndex: -1 }} aria-hidden />
+      <HudFrame />
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Console HUD frame — corner brackets + edge tick rails.
+   Static, cheap, and the strongest "this is a game UI" signal.
+   ═══════════════════════════════════════════════════════════════ */
+
+const BRACKET = 1;
+const BRACKET_COLOR = "rgba(0,229,255,0.28)";
+
+function Bracket({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
+  const top = pos[0] === "t";
+  const left = pos[1] === "l";
+  return (
+    <div
+      className="absolute"
+      style={{
+        width: 46,
+        height: 46,
+        [top ? "top" : "bottom"]: 22,
+        [left ? "left" : "right"]: 22,
+        borderTop: top ? `${BRACKET}px solid ${BRACKET_COLOR}` : undefined,
+        borderBottom: !top ? `${BRACKET}px solid ${BRACKET_COLOR}` : undefined,
+        borderLeft: left ? `${BRACKET}px solid ${BRACKET_COLOR}` : undefined,
+        borderRight: !left ? `${BRACKET}px solid ${BRACKET_COLOR}` : undefined,
+        borderTopLeftRadius: top && left ? 8 : undefined,
+        borderTopRightRadius: top && !left ? 8 : undefined,
+        borderBottomLeftRadius: !top && left ? 8 : undefined,
+        borderBottomRightRadius: !top && !left ? 8 : undefined,
+        boxShadow: "0 0 14px rgba(0,229,255,0.12)",
+      }}
     />
+  );
+}
+
+function HudFrame() {
+  return (
+    <div className="fixed inset-0 pointer-events-none hidden lg:block" style={{ zIndex: 1 }} aria-hidden>
+      <Bracket pos="tl" />
+      <Bracket pos="tr" />
+      <Bracket pos="bl" />
+      {/* bottom-right is left open — the AI assistant button anchors that corner */}
+
+      {/* tick rails */}
+      <div
+        className="absolute left-[22px] top-1/2 -translate-y-1/2"
+        style={{
+          width: 1,
+          height: "34vh",
+          backgroundImage:
+            "repeating-linear-gradient(180deg, rgba(0,229,255,0.30) 0 8px, rgba(0,229,255,0) 8px 22px)",
+        }}
+      />
+      <div
+        className="absolute right-[22px] top-1/2 -translate-y-1/2"
+        style={{
+          width: 1,
+          height: "34vh",
+          backgroundImage:
+            "repeating-linear-gradient(180deg, rgba(168,85,247,0.26) 0 8px, rgba(168,85,247,0) 8px 22px)",
+        }}
+      />
+    </div>
   );
 }
