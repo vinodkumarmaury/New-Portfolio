@@ -25,7 +25,7 @@ import TiltCard3D from "@/app/components/interactive/TiltCard3D";
 import Scene3D from "@/app/components/interactive/Scene3D";
 import { useEffect, useState, useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
-import { Rocket, MapPin, Feather, Code2, Plane, Star, Globe, Zap } from "lucide-react";
+import { Rocket, MapPin, Feather, Code2, Plane, Star, Globe, Zap, Boxes, Cpu } from "lucide-react";
 
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 500, height: 500 });
@@ -52,16 +52,23 @@ export default function Home() {
     {
       icon: <Code2 className="w-6 h-6" />,
       title: "Full-Stack Dev",
-      description: "Building production-ready apps with React, Next.js, Django & FastAPI.",
+      description: "Building production-ready apps with React, Next.js, Django, Node.js & FastAPI.",
       color: "#00e5ff",
       gradient: "from-cyan-500/20 to-blue-600/20",
     },
     {
-      icon: <Rocket className="w-6 h-6" />,
-      title: "Startup Founder",
-      description: "Dreaming of building a billion-dollar startup. Big ideas, relentless hustle.",
+      icon: <Boxes className="w-6 h-6" />,
+      title: "3D & Digital Twins",
+      description: "Unity, Unreal Engine, Revit, SketchUp & CityEngine — 2D-to-3D, modelling and interactive environments.",
       color: "#a855f7",
       gradient: "from-purple-500/20 to-pink-600/20",
+    },
+    {
+      icon: <Cpu className="w-6 h-6" />,
+      title: "AI / ML & Automation",
+      description: "Recommendation systems, forecasting and engineering automation driven by real user behaviour.",
+      color: "#38bdf8",
+      gradient: "from-sky-500/20 to-cyan-600/20",
     },
     {
       icon: <Feather className="w-6 h-6" />,
@@ -83,7 +90,7 @@ export default function Home() {
     { icon: <Code2 className="w-6 h-6" />, number: "1000+", label: "Problems Solved", color: "#00e5ff" },
     { icon: <Star className="w-6 h-6" />, number: "12+", label: "Projects Shipped", color: "#a855f7" },
     { icon: <Globe className="w-6 h-6" />, number: "3+", label: "Years of Coding", color: "#22c55e" },
-    { icon: <Zap className="w-6 h-6" />, number: "5+", label: "Internships & Jobs", color: "#f59e0b" },
+    { icon: <Zap className="w-6 h-6" />, number: "8+", label: "Roles & Internships", color: "#f59e0b" },
   ];
 
   return (
@@ -275,12 +282,11 @@ export default function Home() {
                       options={{
                         strings: [
                           'Software Engineer 💻',
-                          'IIT Kharagpur Grad 🎓',
-                          'Startup Founder Wannabe 🚀',
+                          'Full Stack Builder 🛠️',
+                          '3D & Digital Twins 🧊',
+                          'AI / ML Practitioner 🤖',
                           'Shayar & Poet ✍️',
                           'Travel Lover 🌏',
-                          'Full Stack Builder 🛠️',
-                          'Billionaire in Progress 💰',
                           'Problem Solver ⚡',
                         ],
                         autoStart: true,
@@ -345,9 +351,9 @@ export default function Home() {
                     whileHover={{ y: -4, scale: 1.03 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <div className="hud-title">Mission</div>
-                    <div className="hud-value text-xl" style={{ color: "#a855f7" }}>Startup + Billion$</div>
-                    <p className="hud-caption">No limits. Relentless.</p>
+                    <div className="hud-title">Focus</div>
+                    <div className="hud-value text-xl" style={{ color: "#a855f7" }}>3D × AI × Code</div>
+                    <p className="hud-caption">Digital twins & automation.</p>
                   </motion.div>
                   <motion.div
                     className="glass-panel panel-border hud-corners neon-border-animated os-window"
@@ -617,10 +623,10 @@ export default function Home() {
                     <div className="absolute left-[19px] top-2 bottom-2 w-px" style={{ background: "linear-gradient(to bottom, rgba(0,229,255,0.4), rgba(168,85,247,0.4), rgba(0,229,255,0.1))" }} />
 
                     {[
-                      { dot: "#00e5ff", symbol: "×", title: "Bahraich → IIT KGP", desc: "From a small UP town to IIT Kharagpur — Dual Degree in Mining Engg. (CGPA 7.64). An underdog story that proves grit over everything.", color: "#00e5ff" },
-                      { dot: "#a855f7", symbol: "△", title: "Software Engineer @ Machani Group", desc: "Building scalable web apps with React, Next.js, Django & FastAPI. Previously interned at Enerzyflow, ClaimBuddy & Delishia Analytics — real code, real users, real impact.", color: "#a855f7" },
-                      { dot: "#fbbf24", symbol: "○", title: "The Billion-Dollar Dream", desc: "Beyond the 9-to-5: I'm building toward my own startup. Thinking big, executing relentlessly — every line of code is a step toward a company that touches millions.", color: "#fbbf24" },
-                      { dot: "#22c55e", symbol: "□", title: "Shayar & World Traveller", desc: "I write shayari that blends code with philosophy. When not shipping features, I'm exploring new cities, cultures and perspectives — staying human while being technical.", color: "#22c55e" },
+                      { dot: "#00e5ff", symbol: "×", title: "Engineer by Training, Builder by Instinct", desc: "A Mining Engineering graduate from IIT Kharagpur who turned toward software — drawn to technology-driven solutions that connect code, 3D environments, engineering and real-world systems.", color: "#00e5ff" },
+                      { dot: "#a855f7", symbol: "△", title: "Full-Stack Foundations", desc: "The journey started with React, Next.js, Django, Node.js, APIs, databases and machine learning — then widened into 3D visualisation, digital environments, engineering software, automation and AI-driven applications.", color: "#a855f7" },
+                      { dot: "#fbbf24", symbol: "○", title: "3D, Digital Twins & Automation", desc: "At Machani Group I work across Revit, Unity, Unreal Engine, SketchUp and CityEngine — 2D-to-3D conversion, 3D modelling, sensor integration, interactive environments, and custom plugins for Revit and SketchUp.", color: "#fbbf24" },
+                      { dot: "#22c55e", symbol: "□", title: "Shipping Real Products", desc: "A full-stack HRMS portal, a booking engine, the company website, and an ML-based product affinity and recommendation system built on user behaviour — software that people actually use.", color: "#22c55e" },
                     ].map((item, i) => (
                       <motion.div
                         key={i}

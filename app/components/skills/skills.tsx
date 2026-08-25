@@ -6,6 +6,27 @@ import { useInView } from "react-intersection-observer";
 
 // Skill icons mapping
 const skillIcons: Record<string, string> = {
+  // 3D, engineering & AI
+  "Unity": "fab fa-unity",
+  "Unreal Engine": "fas fa-gamepad",
+  "Revit": "fas fa-drafting-compass",
+  "SketchUp": "fas fa-cube",
+  "CityEngine": "fas fa-city",
+  "2D-to-3D Conversion": "fas fa-cubes",
+  "3D Modeling": "fas fa-shapes",
+  "Interactive Environments": "fas fa-vr-cardboard",
+  "Revit & SketchUp Plugins": "fas fa-puzzle-piece",
+  "Machine Learning": "fas fa-brain",
+  "Recommendation Systems": "fas fa-wand-magic-sparkles",
+  "Forecasting": "fas fa-chart-line",
+  "Sentiment Analysis": "fas fa-comments",
+  "OCR": "fas fa-file-lines",
+  "Engineering Automation": "fas fa-gears",
+  "IoT & Sensor Integration": "fas fa-satellite-dish",
+  "Django": "fab fa-python",
+  "FastAPI": "fas fa-bolt",
+  "PostgreSQL": "fas fa-database",
+  "Prisma": "fas fa-layer-group",
   "HTML": "fab fa-html5",
   "CSS": "fab fa-css3-alt",
   "JavaScript": "fab fa-js",
@@ -145,7 +166,15 @@ export default function Skills() {
     },
     {
       category: "Backend & Databases",
-      items: ["Node.js", "Express", "MongoDB", "SQL", "Firebase", "REST API"]
+      items: ["Node.js", "Express", "Django", "FastAPI", "MongoDB", "PostgreSQL", "SQL", "Prisma", "Firebase", "REST API"]
+    },
+    {
+      category: "3D & Digital Twins",
+      items: ["Unity", "Unreal Engine", "Revit", "SketchUp", "CityEngine", "2D-to-3D Conversion", "3D Modeling", "Interactive Environments", "Revit & SketchUp Plugins"]
+    },
+    {
+      category: "AI / ML & Automation",
+      items: ["Machine Learning", "Recommendation Systems", "Forecasting", "Sentiment Analysis", "OCR", "Engineering Automation", "IoT & Sensor Integration"]
     },
     {
       category: "Tools & Development",

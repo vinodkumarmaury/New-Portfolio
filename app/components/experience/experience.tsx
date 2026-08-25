@@ -1,409 +1,342 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import { useEffect, useState, useRef } from "react";
+import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Briefcase, Calendar, MapPin, Rocket, Monitor } from "lucide-react";
-import TiltCard3D from "@/app/components/interactive/TiltCard3D";
+import {
+  Briefcase,
+  Building2,
+  CalendarDays,
+  ChevronRight,
+  Globe2,
+  Layers,
+  MapPin,
+  Sparkles,
+  Timer,
+} from "lucide-react";
+import { EXPERIENCES, MAX_MONTHS, TRACKS, type ExperienceEntry, type TrackId } from "./experience-data";
 
-export default function Experience() {
-  const experiences = [
-    {
-      title: "Software Engineer",
-      company: "Machani Group",
-      location: "Bengaluru",
-      period: "May 2026 - Present",
-      description: "Working on scalable software solutions and backend services. Building production-ready features, improving system reliability, and collaborating with cross-functional teams to deliver business value.",
-      skills: ["Node.js", "Express", "TypeScript", "APIs", "Performance Optimization"],
-      logo: "/images/machani.png",
-      color: "#06B6D4"
-    },
-    {
-      title: "Software Engineer",
-      company: "Enerzyflow India",
-      location: "Kolkata",
-      period: "August 2025 - March 2026",
-      description: "Designed and developed scalable backend services and REST APIs for processing energy consumption data, built interactive frontend dashboards with React/Next.js, applied ML for consumption analysis and forecasting, and optimized full-stack performance for improved UX.",
-      skills: ["Node.js", "Next.js", "React", "Machine Learning", "API Design"],
-      logo: "/images/enerzyflow.png",
-      color: "#10B981"
-    },
-    {
-      title: "SDE Intern",
-      company: "ClaimBuddy",
-      location: "Gurugram",
-      period: "May 2025 - July 2025",
-      description: "Built Django CSV/Excel importers for transaction data with automated validation and deduplication, reducing errors by 30%. Integrated SMTP for real-time email notifications, extended hospital model and APIs, developed regex OCR parsers and Next.js endpoints, and built Superset dashboards for live reporting.",
-      skills: ["Django", "Next.js", "Prisma", "MySQL", "Superset", "SMTP", "API Development", "Data Validation", "OCR"],
-      logo: "/images/Blasting.png",
-      color: "#FF7A59"
-    },
-    {
-      title: "SDE Intern",
-      company: "Delishia Analytics",
-      location: "Remote",
-      period: "Feb 2025 - Apr 2025",
-      description: "Built real-time political dashboard using React.js and Tailwind CSS, mapped Bihar districts via Google Maps API, analyzed social media/YouTube trends, and contributed to AI tools for predictive voter turnout models.",
-      skills: ["React.js", "Tailwind CSS", "Google Maps API", "AI", "Data Visualization", "Social Media Analytics"],
-      logo: "/images/delishia-logo.png",
-      color: "#3B82F6"
-    },
-    {
-      title: "B.Tech Project: Rock Mass Blasting Prediction System",
-      company: "IIT Kharagpur",
-      location: "Kharagpur",
-      period: "Aug 2024 - Apr 2025",
-      description: "Built scalable full-stack website (FastAPI, Next.js, Tailwind CSS) for blast prediction, integrated empirical formula and cost calculator, added secure login, role-based editing, and Excel/CSV export, and engineered regression models (SVR, RF, XGBoost) achieving R² 0.85.",
-      skills: ["FastAPI", "Next.js", "Tailwind CSS", "MongoDB", "Machine Learning", "Regression", "Authentication"],
-      logo: "/images/Blasting.png",
-      color: "#8C52FF"
-    },
-    {
-      title: "Tech Team Member",
-      company: "Technology Mining Engineering Society",
-      location: "IIT Kharagpur",
-      period: "Aug 2023 - Apr 2024",
-      description: "Contributed to a full-stack event-hosting platform, implemented UI/UX enhancements, resolved critical UI bugs, and optimized React.js components for faster load times.",
-      skills: ["React.js", "UI/UX", "Bug Fixing", "Performance Optimization", "Team Collaboration"],
-      logo: "/images/TMES.jpeg",
-      color: "#8B5CF6"
-    }
-  ];
+const MODE_ICON = {
+  "On-site": Building2,
+  Hybrid: Layers,
+  Remote: Globe2,
+  Campus: Sparkles,
+} as const;
 
-  const timelineBoxRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const rocketControls = useAnimation();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    timelineBoxRefs.current = timelineBoxRefs.current.slice(0, experiences.length);
-
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, [experiences.length]);
-
-  const checkVisibility = () => {
-    const viewportHeight = window.innerHeight;
-    let maxVisibleArea = 0;
-    let mostVisibleIndex = 0;
-
-    timelineBoxRefs.current.forEach((box, index) => {
-      if (!box) return;
-
-      const rect = box.getBoundingClientRect();
-      const visibleTop = Math.max(0, rect.top);
-      const visibleBottom = Math.min(viewportHeight, rect.bottom);
-      const visibleArea = visibleBottom > visibleTop ? visibleBottom - visibleTop : 0;
-
-      if (visibleArea > maxVisibleArea) {
-        maxVisibleArea = visibleArea;
-        mostVisibleIndex = index;
-      }
-    });
-
-    if (maxVisibleArea > 0) {
-      setActiveIndex(mostVisibleIndex);
-    }
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      window.requestAnimationFrame(checkVisibility);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    checkVisibility();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (timelineBoxRefs.current[activeIndex]) {
-      const activeBox = timelineBoxRefs.current[activeIndex];
-      if (activeBox) {
-        const boxRect = activeBox.getBoundingClientRect();
-        const boxCenterY = boxRect.top + boxRect.height / 2;
-        const timelineRect = document.getElementById("exp-timeline-divider")?.getBoundingClientRect();
-
-        if (timelineRect) {
-          const timelineTop = timelineRect.top;
-          const timelineHeight = timelineRect.height;
-          const boxRelativePosition = boxCenterY - timelineTop;
-          const percentPosition = (boxRelativePosition / timelineHeight) * 100;
-
-          const constrainedPosition = Math.max(10, Math.min(90, percentPosition));
-
-          rocketControls.start({
-            top: `${constrainedPosition}%`,
-            transition: { duration: 0.6, ease: "easeInOut" }
-          });
-        }
-      }
-    }
-  }, [activeIndex, rocketControls]);
-
-  const [ref, inView] = useInView({
-    triggerOnce: false,
-    threshold: 0.1
-  });
-
-  const mainControls = useAnimation();
-
-  useEffect(() => {
-    if (inView) {
-      mainControls.start("visible");
-    }
-  }, [inView, mainControls]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 12
-      }
-    }
-  };
-
-  const scrollToExperience = (index: number) => {
-    setActiveIndex(index);
-    const box = timelineBoxRefs.current[index];
-    if (box) {
-      const offset = 150;
-      const boxTop = box.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({
-        top: boxTop,
-        behavior: "smooth"
-      });
-    }
-  };
+/** Animated integer counter that runs once when scrolled into view. */
+function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const [value, setValue] = useState(0);
+  const started = useRef(false);
 
   return (
-    <section id="experience" className="experience-section py-24 relative bg-gradient-to-b from-background to-secondary/10">
-      <div className="exp-bg-pattern absolute inset-0 opacity-5"></div>
+    <motion.span
+      onViewportEnter={() => {
+        if (started.current) return;
+        started.current = true;
+        const duration = 1100;
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - t0) / duration);
+          // easeOutCubic
+          setValue(Math.round(to * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }}
+      viewport={{ once: true }}
+    >
+      {value}
+      {suffix}
+    </motion.span>
+  );
+}
 
-      <div className="container px-4 mx-auto">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 relative inline-block">
-            <span className="mr-2 text-primary">
-              <Briefcase className="inline-block h-8 w-8 mb-1" />
-            </span>
-            Professional Experience
-            <motion.span
-              className="absolute -bottom-2 left-0 w-full h-1 bg-primary rounded-full"
-              initial={{ width: "0%" }}
-              whileInView={{ width: "100%" }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            ></motion.span>
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mt-4">My professional journey and work experience</p>
-        </motion.div>
+function StatTile({
+  icon,
+  value,
+  suffix,
+  label,
+  color,
+  delay,
+}: {
+  icon: React.ReactNode;
+  value: number;
+  suffix?: string;
+  label: string;
+  color: string;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      className="exp-stat"
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay }}
+      whileHover={{ y: -6 }}
+      style={{ borderColor: `${color}28` }}
+    >
+      <div className="exp-stat-icon" style={{ color, background: `${color}18` }}>
+        {icon}
+      </div>
+      <div className="exp-stat-value" style={{ color }}>
+        <Counter to={value} suffix={suffix} />
+      </div>
+      <div className="exp-stat-label">{label}</div>
+    </motion.div>
+  );
+}
 
-        {isMobile && (
-          <div className="mb-10 px-4">
-            <div className="flex justify-center space-x-2 mb-5">
-              {experiences.map((exp, idx) => (
-                <motion.button
-                  key={idx}
-                  className={`w-3 h-3 rounded-full transition-all ${activeIndex === idx ? "bg-primary scale-125" : "bg-muted"}`}
-                  onClick={() => scrollToExperience(idx)}
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.2 }}
-                />
-              ))}
+function ExperienceCard({ exp, index }: { exp: ExperienceEntry; index: number }) {
+  const ModeIcon = MODE_ICON[exp.mode];
+  // Open by default — the bullets are the substance; the toggle is for compacting.
+  const [open, setOpen] = useState(true);
+
+  return (
+    <motion.article
+      layout
+      className="exp-card"
+      style={{ ["--accent" as string]: exp.color }}
+      initial={{ opacity: 0, y: 34 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.55, delay: Math.min(index * 0.06, 0.3) }}
+    >
+      {/* node on the rail */}
+      <span className="exp-node" aria-hidden>
+        <span className="exp-node-core" />
+        {exp.current && <span className="exp-node-pulse" />}
+      </span>
+
+      <div className="exp-card-inner">
+        <span className="exp-card-sheen" aria-hidden />
+
+        <header className="exp-card-head">
+          <div className="exp-logo">
+            <Image src={exp.logo} alt={exp.company} width={56} height={56} className="exp-logo-img" />
+          </div>
+
+          <div className="exp-head-text">
+            <div className="exp-title-row">
+              <h3 className="exp-role">{exp.title}</h3>
+              {exp.current && (
+                <span className="exp-live">
+                  <span className="exp-live-dot" />
+                  CURRENT
+                </span>
+              )}
+            </div>
+
+            <p className="exp-company">
+              {exp.company}
+              <span className="exp-employment">· {exp.employment}</span>
+            </p>
+
+            <div className="exp-meta">
+              <span className="exp-meta-item">
+                <CalendarDays className="exp-meta-icon" />
+                {exp.period}
+              </span>
+              <span className="exp-meta-item">
+                <Timer className="exp-meta-icon" />
+                {exp.durationLabel}
+              </span>
+              <span className="exp-meta-item">
+                <MapPin className="exp-meta-icon" />
+                {exp.location}
+              </span>
+              <span className="exp-mode">
+                <ModeIcon className="exp-meta-icon" />
+                {exp.mode}
+              </span>
             </div>
           </div>
+        </header>
+
+        {/* tenure bar — length is relative to the longest stint */}
+        <div className="exp-tenure" title={`${exp.durationLabel} tenure`}>
+          <motion.span
+            className="exp-tenure-fill"
+            initial={{ width: 0 }}
+            whileInView={{ width: `${Math.max(8, (exp.months / MAX_MONTHS) * 100)}%` }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
+
+        {exp.highlights.length > 0 && (
+          <>
+            <button
+              type="button"
+              className="exp-toggle"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+            >
+              <motion.span animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.25 }} className="inline-flex">
+                <ChevronRight className="w-3.5 h-3.5" />
+              </motion.span>
+              {open ? "Hide details" : `Show ${exp.highlights.length} highlights`}
+            </button>
+
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.ul
+                  className="exp-points"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.35, ease: "easeInOut" }}
+                >
+                  {exp.highlights.map((point, i) => (
+                    <motion.li
+                      key={i}
+                      className="exp-point"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.35, delay: 0.06 * i }}
+                    >
+                      <span className="exp-bullet" aria-hidden />
+                      {point}
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              )}
+            </AnimatePresence>
+          </>
         )}
 
-        <motion.div ref={ref} variants={containerVariants} initial="hidden" animate={mainControls} className="exp-timeline">
-          <div id="exp-timeline-divider" className="exp-timeline-divider">
-            <div className="exp-timeline-line"></div>
-
-            <motion.div className="exp-timeline-traveller" animate={rocketControls} initial={{ top: "10%" }}>
-              <motion.div
-                className="traveller-icon-container"
-                animate={{
-                  rotate: [0, 10, -10, 0],
-                  y: [0, -5, 5, 0]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  repeatType: "loop"
-                }}
-              >
-                <Rocket className="h-6 w-6 text-white transform -rotate-45" />
-              </motion.div>
-            </motion.div>
-
-            {experiences.map((_, idx) => (
-              <motion.div
-                key={`dot-${idx}`}
-                className={`timeline-dot ${activeIndex === idx ? "active" : ""}`}
-                style={{
-                  top: `${15 + (idx * 70) / experiences.length}%`,
-                  backgroundColor: activeIndex === idx ? experiences[idx].color : undefined
-                }}
-                animate={
-                  activeIndex === idx
-                    ? {
-                        scale: [1, 1.3, 1],
-                        boxShadow: [
-                          "0 0 0 rgba(var(--primary), 0.4)",
-                          "0 0 0 8px rgba(var(--primary), 0.1)",
-                          "0 0 0 rgba(var(--primary), 0.4)"
-                        ]
-                      }
-                    : {}
-                }
-                transition={{ duration: 2, repeat: activeIndex === idx ? Infinity : 0 }}
-                onClick={() => scrollToExperience(idx)}
-              />
-            ))}
-          </div>
-
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              ref={(el) => (timelineBoxRefs.current[index] = el)}
-              className={`exp-timeline-box ${index % 2 === 0 || isMobile ? "exp-left" : "exp-right"} ${
-                activeIndex === index ? "active-exp-timeline-box" : ""
-              }`}
-              variants={itemVariants}
-              onHoverStart={() => setHoverIndex(index)}
-              onHoverEnd={() => setHoverIndex(null)}
-              whileHover={{ y: -5, transition: { duration: 0.3 } }}
+        <div className="exp-chips">
+          {exp.skills.map((skill, i) => (
+            <motion.span
+              key={skill}
+              className="exp-chip"
+              initial={{ opacity: 0, scale: 0.85 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.03 * i }}
+              whileHover={{ y: -2, scale: 1.05 }}
             >
-              <TiltCard3D maxTilt={7} glare scale={1.01}>
-              <motion.div
-                className="exp-timeline-container"
-                style={{
-                  borderColor: hoverIndex === index ? exp.color : undefined,
-                  boxShadow: hoverIndex === index ? `0 10px 30px -15px ${exp.color}40` : undefined
-                }}
+              {skill}
+            </motion.span>
+          ))}
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+export default function Experience() {
+  const [track, setTrack] = useState<TrackId | "all">("all");
+  const railRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: railRef,
+    offset: ["start 75%", "end 55%"],
+  });
+  const railScale = useSpring(scrollYProgress, { stiffness: 90, damping: 26, restDelta: 0.001 });
+  const railGlow = useTransform(scrollYProgress, [0, 1], [0.35, 1]);
+
+  const visible = useMemo(
+    () => (track === "all" ? EXPERIENCES : EXPERIENCES.filter((e) => e.track === track)),
+    [track]
+  );
+
+  const stats = useMemo(() => {
+    const totalMonths = EXPERIENCES.filter((e) => e.track !== "volunteering").reduce(
+      (sum, e) => sum + e.months,
+      0
+    );
+    const skills = new Set(EXPERIENCES.flatMap((e) => e.skills));
+    return {
+      years: Math.round((totalMonths / 12) * 10) / 10,
+      organisations: new Set(EXPERIENCES.map((e) => e.company)).size,
+      roles: EXPERIENCES.length,
+      technologies: skills.size,
+    };
+  }, []);
+
+  return (
+    <section id="experience" className="experience-section py-24 relative">
+      <div className="container px-4 mx-auto max-w-5xl">
+        {/* ── header ── */}
+        <motion.div
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: -18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="exp-eyebrow">
+            <Briefcase className="w-3.5 h-3.5" />
+            CAREER LOG
+          </span>
+          <h2 className="exp-heading">Professional Experience</h2>
+          <p className="exp-subheading">
+            From mine planning at CMPDI to 3D environments and digital twins — the full run.
+          </p>
+        </motion.div>
+
+        {/* ── stat strip ── */}
+        <div className="exp-stats">
+          <StatTile icon={<Timer className="w-4 h-4" />} value={stats.years} suffix="+ yrs" label="Experience" color="#00e5ff" delay={0} />
+          <StatTile icon={<Building2 className="w-4 h-4" />} value={stats.organisations} suffix="" label="Organisations" color="#a855f7" delay={0.08} />
+          <StatTile icon={<Briefcase className="w-4 h-4" />} value={stats.roles} suffix="" label="Roles Held" color="#22c55e" delay={0.16} />
+          <StatTile icon={<Layers className="w-4 h-4" />} value={stats.technologies} suffix="+" label="Technologies" color="#fbbf24" delay={0.24} />
+        </div>
+
+        {/* ── filter tabs ── */}
+        <div className="exp-filters" role="tablist" aria-label="Filter experience by track">
+          {TRACKS.map((t) => {
+            const active = track === t.id;
+            const count = t.id === "all" ? EXPERIENCES.length : EXPERIENCES.filter((e) => e.track === t.id).length;
+            return (
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setTrack(t.id)}
+                className={`exp-filter ${active ? "is-active" : ""}`}
+                style={{ ["--accent" as string]: t.color }}
               >
-                <div className="exp-timeline-header" style={{ backgroundColor: `${exp.color}10` }}>
-                  <div className="exp-timeline-logo">
-                    <div className="logo-wrapper" style={{ borderColor: `${exp.color}40` }}>
-                      <Image
-                        src={exp.logo}
-                        alt={exp.company}
-                        width={70}
-                        height={70}
-                        className="exp-logo-image"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "https://via.placeholder.com/70?text=Company";
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="exp-header-content">
-                    <h3 className="exp-designation" style={{ color: exp.color }}>
-                      {exp.title}
-                    </h3>
-                    <h4 className="exp-company">{exp.company}</h4>
-
-                    <div className="exp-meta">
-                      <div className="exp-meta-item">
-                        <MapPin className="exp-meta-icon" style={{ color: exp.color }} />
-                        <span>{exp.location}</span>
-                      </div>
-
-                      <div className="exp-meta-item">
-                        <Calendar className="exp-meta-icon" style={{ color: exp.color }} />
-                        <span>{exp.period}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="exp-timeline-body">
-                  <p className="exp-description">{exp.description}</p>
-
-                  <h5 className="exp-skills-heading">
-                    <Monitor className="h-4 w-4 mr-1.5" style={{ color: exp.color }} />
-                    Skills & Technologies
-                  </h5>
-
-                  <div className="exp-skills-container">
-                    {exp.skills.map((skill, skillIndex) => (
-                      <motion.span
-                        key={skillIndex}
-                        className="exp-skill"
-                        style={{
-                          backgroundColor: `${exp.color}15`,
-                          color: exp.color,
-                          borderColor: `${exp.color}30`
-                        }}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.05 * skillIndex }}
-                        whileHover={{
-                          backgroundColor: exp.color,
-                          color: "white",
-                          scale: 1.05
-                        }}
-                      >
-                        {skill}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
-
-                <motion.div
-                  className="exp-active-indicator"
-                  style={{ backgroundColor: exp.color }}
-                  animate={{
-                    opacity: activeIndex === index ? 1 : 0,
-                    width: activeIndex === index ? "4px" : "0px"
-                  }}
-                  transition={{ duration: 0.3 }}
-                />
-
-                {hoverIndex === index && (
-                  <motion.div
-                    className="exp-shine"
-                    initial={{ left: "-100%" }}
-                    animate={{ left: "100%" }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                    style={{ background: `linear-gradient(90deg, transparent, ${exp.color}20, transparent)` }}
+                {active && (
+                  <motion.span
+                    layoutId="exp-filter-pill"
+                    className="exp-filter-pill"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   />
                 )}
-              </motion.div>
-              </TiltCard3D>
-            </motion.div>
-          ))}
-        </motion.div>
+                <span className="exp-filter-label">
+                  {t.label}
+                  <span className="exp-filter-count">{count}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── timeline ── */}
+        <div className="exp-rail-wrap" ref={railRef}>
+          <div className="exp-rail" aria-hidden>
+            <motion.div className="exp-rail-fill" style={{ scaleY: railScale, opacity: railGlow }} />
+          </div>
+
+          <motion.div layout className="exp-list">
+            <AnimatePresence mode="popLayout">
+              {visible.map((exp, i) => (
+                <motion.div
+                  key={exp.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.18 } }}
+                  transition={{ duration: 0.32 }}
+                >
+                  <ExperienceCard exp={exp} index={i} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

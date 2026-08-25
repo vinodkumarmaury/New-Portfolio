@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Quote, Feather, Globe, Code2, Rocket } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Quote, Feather, Code2 } from "lucide-react";
 
 const shayariPosts = [
   {
@@ -242,34 +242,6 @@ And keeping every truth safe, write a loving prayer.`,
     gradient: "from-yellow-500/20 to-orange-600/20",
     border: "border-yellow-500/30"
   },
-  {
-    id: 9,
-    category: "Bahraich to Bengaluru",
-    categoryIcon: <Globe className="w-4 h-4" />,
-    categoryColor: "#ef4444",
-    hindi: "छोटे से गाँव से निकला था जब मैं,\nसपने बड़े थे, पर जेब थी खाली।\nIIT की धूप में तपा जब मैं,\nसोना बन गई मेरी हर एक रात काली।",
-    english: "When I left from a small village long ago,\nDreams were big, but the pocket was bare.\nWhen tempered in IIT's relentless glow,\nEvery dark night turned golden — pure and rare.",
-    likes: 2341,
-    comments: 187,
-    timestamp: "1 month ago",
-    mood: "inspirational",
-    gradient: "from-red-500/20 to-rose-600/20",
-    border: "border-red-500/30"
-  },
-  {
-    id: 10,
-    category: "Startup Dreams",
-    categoryIcon: <Rocket className="w-4 h-4" />,
-    categoryColor: "#a855f7",
-    hindi: "Startup का सपना आँखों में पाला है,\nBillionaire बनना है, यह इरादा कमाल है।\nIIT की राहों पर चला जो सफर,\nवो नींव है जिस पर मेरा सारा जहाँ है।",
-    english: "I've nurtured the dream of a startup in my eyes,\nBeing a billionaire — this intention is extraordinary.\nThe journey on IIT's roads I once walked,\nIs the foundation on which my whole world lies.",
-    likes: 1204,
-    comments: 89,
-    timestamp: "2 months ago",
-    mood: "ambitious",
-    gradient: "from-purple-500/20 to-pink-600/20",
-    border: "border-purple-500/30"
-  }
 ];
 
 export default function Shayari() {
