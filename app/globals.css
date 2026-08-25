@@ -4,8 +4,8 @@
 
 :root {
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 2, 6, 23;
-  --background-end-rgb: 3, 7, 18;
+  --background-start-rgb: 13, 13, 26;
+  --background-end-rgb: 6, 5, 14;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -18,25 +18,27 @@
 
 @layer base {
   :root {
-    --background: 226 50% 6%;
-    --foreground: 210 40% 98%;
-    --card: 225 36% 11%;
-    --card-foreground: 210 40% 98%;
-    --popover: 225 36% 11%;
-    --popover-foreground: 210 40% 98%;
+    /* Base sits in indigo (240°), well clear of the cyan accent (187°).
+       Neighbouring hues were what made the old blue-on-blue read muddy. */
+    --background: 240 32% 6%;
+    --foreground: 213 38% 98%;
+    --card: 238 26% 10%;
+    --card-foreground: 213 38% 98%;
+    --popover: 238 26% 10%;
+    --popover-foreground: 213 38% 98%;
     --primary: 187 100% 54%;
     --primary-rgb: 0, 229, 255;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 232 34% 15%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 232 31% 17%;
-    --muted-foreground: 215 20% 72%;
+    --primary-foreground: 240 40% 8%;
+    --secondary: 240 24% 14%;
+    --secondary-foreground: 213 38% 98%;
+    --muted: 240 20% 16%;
+    --muted-foreground: 225 16% 74%;
     --accent: 270 92% 65%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 223 28% 22%;
-    --input: 223 28% 22%;
+    --border: 236 22% 21%;
+    --input: 236 22% 21%;
     --ring: 187 100% 54%;
     --chart-1: 187 100% 54%;
     --chart-2: 270 92% 65%;
@@ -46,25 +48,25 @@
     --radius: 1rem;
   }
   .dark {
-    --background: 226 50% 5%;
-    --foreground: 210 40% 98%;
-    --card: 225 36% 11%;
-    --card-foreground: 210 40% 98%;
-    --popover: 225 36% 11%;
-    --popover-foreground: 210 40% 98%;
+    --background: 240 34% 5%;
+    --foreground: 213 38% 98%;
+    --card: 238 26% 10%;
+    --card-foreground: 213 38% 98%;
+    --popover: 238 26% 10%;
+    --popover-foreground: 213 38% 98%;
     --primary: 187 100% 54%;
     --primary-rgb: 0, 229, 255;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 231 32% 13%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 232 31% 17%;
-    --muted-foreground: 215 20% 72%;
+    --primary-foreground: 240 40% 8%;
+    --secondary: 240 24% 12%;
+    --secondary-foreground: 213 38% 98%;
+    --muted: 240 20% 16%;
+    --muted-foreground: 225 16% 74%;
     --accent: 270 92% 65%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 213 38% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 223 28% 22%;
-    --input: 223 28% 22%;
+    --border: 236 22% 21%;
+    --input: 236 22% 21%;
     --ring: 187 100% 54%;
     --chart-1: 187 100% 54%;
     --chart-2: 270 92% 65%;
@@ -2271,11 +2273,17 @@ input:focus, textarea:focus {
    four competing glows.
    ═══════════════════════════════════════════════ */
 
+/* Deep indigo environment: lifted "sky" at the top, near-black "floor" at the
+   bottom for the horizon grid to glow against, with one faint warm ember so
+   the whole page isn't a single cold hue. */
 body {
   background:
-    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(0,229,255,0.10), transparent 60%),
-    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(168,85,247,0.08), transparent 60%),
-    linear-gradient(180deg, hsl(228 52% 6%) 0%, hsl(230 55% 4%) 55%, hsl(232 60% 3%) 100%) !important;
+    radial-gradient(ellipse 130% 60% at 50% -18%, rgba(72, 118, 255, 0.10), transparent 64%),
+    radial-gradient(ellipse 55% 40% at 92% 4%, rgba(168, 85, 247, 0.075), transparent 66%),
+    radial-gradient(ellipse 60% 35% at 8% 12%, rgba(0, 229, 255, 0.055), transparent 66%),
+    radial-gradient(ellipse 90% 40% at 50% 106%, rgba(255, 150, 80, 0.035), transparent 62%),
+    linear-gradient(180deg, hsl(240 32% 8%) 0%, hsl(242 34% 5%) 48%, hsl(248 44% 3%) 100%) !important;
+  background-attachment: fixed !important;
 }
 
 /* Fine console grid — tighter, cooler, quieter */
@@ -2303,10 +2311,15 @@ body::before {
   animation: blobDrift 26s ease-in-out infinite alternate !important;
 }
 
+/* main carried an opaque bg-background that hid the body environment. */
+.game-shell {
+  background: transparent !important;
+}
+
 .game-shell::before {
   background:
-    radial-gradient(circle at 18% 6%, rgba(0,229,255,0.07), transparent 34%),
-    radial-gradient(circle at 82% 12%, rgba(168,85,247,0.07), transparent 32%) !important;
+    radial-gradient(circle at 18% 6%, rgba(0,229,255,0.055), transparent 34%),
+    radial-gradient(circle at 82% 12%, rgba(168,85,247,0.06), transparent 32%) !important;
   filter: blur(14px) !important;
 }
 

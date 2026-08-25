@@ -22,6 +22,8 @@ const CYAN = [0, 229, 255] as const;
 const VIOLET = [168, 85, 247] as const;
 const GREEN = [34, 197, 94] as const;
 const AMBER = [251, 191, 36] as const;
+/** Ambient fill light — sits between the indigo base and the cyan accent. */
+const AZURE = [72, 118, 255] as const;
 
 type RGB = readonly [number, number, number];
 
@@ -146,9 +148,9 @@ export default function GamingBackground() {
 
     // ── 1. Volumetric light pools ──────────────────────────────
     const pools = [
-      { c: CYAN, ox: 0.16, oy: 0.1, ax: 0.07, ay: 0.05, sp: 0.055, ph: 0, r: 0.62, a: 0.1 },
-      { c: VIOLET, ox: 0.85, oy: 0.14, ax: 0.06, ay: 0.06, sp: 0.043, ph: 2.1, r: 0.58, a: 0.09 },
-      { c: GREEN, ox: 0.55, oy: 0.86, ax: 0.09, ay: 0.04, sp: 0.032, ph: 4.2, r: 0.5, a: 0.05 },
+      { c: CYAN, ox: 0.16, oy: 0.1, ax: 0.07, ay: 0.05, sp: 0.055, ph: 0, r: 0.62, a: 0.085 },
+      { c: VIOLET, ox: 0.85, oy: 0.14, ax: 0.06, ay: 0.06, sp: 0.043, ph: 2.1, r: 0.58, a: 0.08 },
+      { c: AZURE, ox: 0.5, oy: 0.9, ax: 0.09, ay: 0.04, sp: 0.032, ph: 4.2, r: 0.55, a: 0.055 },
     ];
 
     // ── 3. Hex mesh ────────────────────────────────────────────
@@ -458,15 +460,15 @@ export default function GamingBackground() {
       ctx!.globalCompositeOperation = "source-over";
 
       const calm = ctx!.createRadialGradient(W / 2, H * 0.48, 0, W / 2, H * 0.48, contentHalf * 1.5);
-      calm.addColorStop(0, "rgba(3,6,18,0.34)");
-      calm.addColorStop(0.62, "rgba(3,6,18,0.16)");
-      calm.addColorStop(1, "rgba(3,6,18,0)");
+      calm.addColorStop(0, "rgba(8,7,20,0.34)");
+      calm.addColorStop(0.62, "rgba(8,7,20,0.16)");
+      calm.addColorStop(1, "rgba(8,7,20,0)");
       ctx!.fillStyle = calm;
       ctx!.fillRect(0, 0, W, H);
 
       const vig = ctx!.createRadialGradient(W / 2, H / 2, H * 0.34, W / 2, H / 2, H * 0.95);
-      vig.addColorStop(0, "rgba(0,0,0,0)");
-      vig.addColorStop(1, "rgba(0,0,0,0.42)");
+      vig.addColorStop(0, "rgba(4,3,12,0)");
+      vig.addColorStop(1, "rgba(4,3,12,0.46)");
       ctx!.fillStyle = vig;
       ctx!.fillRect(0, 0, W, H);
     }
