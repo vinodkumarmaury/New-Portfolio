@@ -2831,3 +2831,453 @@ body::before {
   .exp-live-dot { animation: none; }
   .exp-card-sheen { display: none; }
 }
+
+/* ═══════════════════════════════════════════════
+   CAREER MAP — TIMELINE + DOMAIN VISUALISATION
+   Mobile-first: labels stack above the bars, and the
+   time axis stays full-bleed so nothing needs scrolling.
+   ═══════════════════════════════════════════════ */
+
+.cmap {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 11, 26, 0.6);
+  backdrop-filter: blur(24px) saturate(150%);
+  padding: 1.1rem 1rem 1.25rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .cmap { padding: 1.4rem 1.5rem 1.6rem; }
+}
+
+.cmap-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.15rem;
+}
+
+@media (min-width: 560px) {
+  .cmap-head {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+.cmap-title {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.06em;
+}
+
+.cmap-sub {
+  margin-top: 0.2rem;
+  font-size: 0.74rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* view switch */
+.cmap-switch {
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.03);
+  align-self: flex-start;
+}
+
+.cmap-switch-btn {
+  position: relative;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: color 180ms ease;
+  white-space: nowrap;
+}
+
+.cmap-switch-btn.is-on { color: #061018; }
+
+.cmap-switch-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #00e5ff, #6ee7ff);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+}
+
+.cmap-switch-label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ── timeline ── */
+.cmap-timeline { position: relative; padding-top: 1.75rem; }
+
+.cmap-grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1.75rem;
+  bottom: 2.6rem;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  /* on wide screens the chart body starts after the label column */
+  .cmap-grid { left: 8.5rem; }
+}
+
+.cmap-grid-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cmap-grid-label {
+  position: absolute;
+  top: -1.2rem;
+  left: 0;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: rgba(160, 178, 210, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+.cmap-now {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.5), rgba(0, 229, 255, 0.05));
+}
+
+.cmap-now-label {
+  position: absolute;
+  top: -1.2rem;
+  left: 0;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  color: #7fe9ff;
+}
+
+.cmap-rows {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.cmap-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.15rem;
+  border-radius: 0.4rem;
+  padding: 0.1rem 0;
+  transition: background 180ms ease;
+}
+
+@media (min-width: 768px) {
+  .cmap-row {
+    grid-template-columns: 8.5rem 1fr;
+    align-items: center;
+    gap: 0;
+  }
+}
+
+.cmap-row.is-active { background: rgba(255, 255, 255, 0.035); }
+
+.cmap-row-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: rgba(190, 205, 232, 0.82);
+  padding-right: 0.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 180ms ease;
+}
+
+.cmap-row.is-active .cmap-row-label { color: #fff; }
+
+.cmap-track {
+  position: relative;
+  height: 1.35rem;
+}
+
+@media (min-width: 768px) {
+  .cmap-track { height: 1.5rem; }
+}
+
+.cmap-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 0.3rem;
+  min-width: 0.7rem;
+  background: rgba(0, 229, 255, 0.55);
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 55%, transparent),
+    var(--accent));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.cmap-row.is-active .cmap-bar {
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
+  transform: scaleY(1.12);
+}
+
+.cmap-bar-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(4, 8, 20, 0.85);
+  white-space: nowrap;
+  padding: 0 0.35rem;
+}
+
+.cmap-bar-live {
+  position: absolute;
+  right: 0.28rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #fff;
+  animation: expLive 1.6s ease-in-out infinite;
+}
+
+.cmap-readout {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 0.72rem;
+}
+
+.cmap-readout-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.cmap-readout-role { font-weight: 700; color: #fff; }
+.cmap-readout-company { color: rgba(200, 214, 238, 0.9); }
+.cmap-readout-meta { color: hsl(var(--muted-foreground)); }
+.cmap-readout-sep { color: rgba(255, 255, 255, 0.25); }
+
+/* ── domains ── */
+.cmap-stack {
+  display: flex;
+  height: 0.6rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 1.25rem;
+}
+
+.cmap-stack-seg { display: block; height: 100%; }
+
+.cmap-domain-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+@media (min-width: 640px) {
+  .cmap-domain-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .cmap-domain-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.cmap-domain-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.cmap-domain-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+
+.cmap-domain-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cmap-domain-months {
+  margin-left: auto;
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.cmap-domain-bar {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.cmap-domain-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.cmap-domain-roles {
+  margin-top: 0.4rem;
+  font-size: 0.64rem;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmap-bar-live { animation: none; }
+  .cmap-row.is-active .cmap-bar { transform: none; }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE PASS — PHONES → ULTRAWIDE
+   ═══════════════════════════════════════════════ */
+
+/* Nothing may push the page sideways. */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Long unbroken strings (URLs, tech names) must wrap, not overflow. */
+p, li, h1, h2, h3, h4, h5, span, a {
+  overflow-wrap: break-word;
+}
+
+/* Fluid section rhythm — 6rem of padding is too much on a phone. */
+@media (max-width: 640px) {
+  section { padding-top: 3.25rem !important; padding-bottom: 3.25rem !important; }
+}
+
+/* ── career log on small screens ── */
+@media (max-width: 767px) {
+  .exp-card { padding-left: 2.25rem; }
+  .exp-node { left: 4px; }
+  .exp-rail { left: 11px; }
+
+  .exp-card-inner { padding: 0.95rem 0.9rem 1rem; }
+  .exp-card-head { gap: 0.7rem; }
+  .exp-logo { width: 2.5rem; height: 2.5rem; border-radius: 0.6rem; }
+  .exp-role { font-size: 0.92rem; }
+  .exp-company { font-size: 0.82rem; }
+  .exp-point { font-size: 0.79rem; line-height: 1.55; }
+  .exp-meta { gap: 0.3rem 0.6rem; }
+  .exp-meta-item { font-size: 0.68rem; }
+
+  /* filters scroll horizontally rather than wrapping into a tall block */
+  .exp-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+  .exp-filters::-webkit-scrollbar { display: none; }
+  .exp-filter { flex: 0 0 auto; padding: 0.45rem 0.8rem; font-size: 0.74rem; }
+}
+
+@media (max-width: 380px) {
+  .exp-chip { font-size: 0.63rem; padding: 0.2rem 0.45rem; }
+  .exp-stat-value { font-size: 1.15rem; }
+  .exp-stat { padding: 0.8rem 0.6rem; }
+}
+
+/* ── career map on small screens ── */
+@media (max-width: 767px) {
+  .cmap { padding: 0.9rem 0.8rem 1.1rem; }
+  .cmap-rows { gap: 0.7rem; }
+  .cmap-row-label { font-size: 0.66rem; }
+  .cmap-track { height: 1.15rem; }
+  .cmap-bar-label { font-size: 0.54rem; padding: 0 0.25rem; }
+  .cmap-grid-label { font-size: 0.55rem; }
+  .cmap-readout { font-size: 0.68rem; padding: 0.5rem 0.6rem; }
+}
+
+/* Very narrow phones: the duration label stops fitting inside short bars. */
+@media (max-width: 420px) {
+  .cmap-bar-label { display: none; }
+}
+
+/* ── globe ── */
+@media (max-width: 640px) {
+  .skills-globe-shell { padding-left: 0; padding-right: 0; }
+}
+
+/* ── touch devices: no hover-only affordances ── */
+@media (hover: none) {
+  .exp-card-sheen { display: none; }
+  .exp-card:hover .exp-card-inner { transform: none; }
+}
+
+/* ── ultrawide: keep the reading measure sane ── */
+@media (min-width: 1600px) {
+  .exp-heading { font-size: 2.8rem; }
+}
+
+/* Anchored sections were landing under the fixed navbar when arriving via a
+   nav link or a #hash URL. */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+@media (max-width: 767px) {
+  section[id] { scroll-margin-top: 4.5rem; }
+}

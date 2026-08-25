@@ -92,6 +92,8 @@ export default function Skills3DGlobe() {
   });
   const [selected, setSelected] = useState<{ name: string; cat: number; level: number; sx: number; sy: number } | null>(null);
   const [hovered, setHovered] = useState<string>("");
+  /** CSS-pixel size of the canvas — layout maths use this, not the DPR-scaled backing store. */
+  const [cssSize, setCssSize] = useState(0);
 
   const points = useRef<Point[]>([]);
 
@@ -106,12 +108,21 @@ export default function Skills3DGlobe() {
     const ctx = canvas.getContext("2d")!;
     const state = stateRef.current;
 
+    // Layout maths run in CSS pixels; the backing store is scaled by DPR so
+    // the globe stays crisp on retina phones and laptops.
+    let size = 0;
+
     function resize() {
       const container = containerRef.current;
       if (!container) return;
-      const size = Math.min(container.clientWidth, 520);
-      canvas.width = size;
-      canvas.height = size;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      size = Math.max(220, Math.min(container.clientWidth, 520));
+      canvas.width = Math.round(size * dpr);
+      canvas.height = Math.round(size * dpr);
+      canvas.style.width = `${size}px`;
+      canvas.style.height = `${size}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      setCssSize(size);
     }
     resize();
     window.addEventListener("resize", resize);
@@ -153,7 +164,7 @@ export default function Skills3DGlobe() {
         if (idx >= 0) {
           const p = points.current[idx];
           const [rx, ry, rz] = rotate(p.ox, p.oy, p.oz, state.rotX, state.rotY);
-          const W = canvas.width, H = canvas.height;
+          const W = size, H = size;
           const dist = 2.5 / state.zoom;
           const scale = (W * 0.38) / (dist + rz);
           const sx = W / 2 + rx * scale;
@@ -171,11 +182,14 @@ export default function Skills3DGlobe() {
 
     // Touch support
     let lastTouchX = 0, lastTouchY = 0;
+    let touchStartX = 0, touchStartY = 0;
     function onTouchStart(e: TouchEvent) {
       if (e.touches.length === 1) {
         state.dragging = true;
         lastTouchX = e.touches[0].clientX;
         lastTouchY = e.touches[0].clientY;
+        touchStartX = lastTouchX;
+        touchStartY = lastTouchY;
         state.velX = 0; state.velY = 0;
       }
     }
@@ -190,7 +204,30 @@ export default function Skills3DGlobe() {
       lastTouchX = e.touches[0].clientX;
       lastTouchY = e.touches[0].clientY;
     }
-    function onTouchEnd() { state.dragging = false; }
+    function onTouchEnd(e: TouchEvent) {
+      state.dragging = false;
+      const t = e.changedTouches[0];
+      if (!t) return;
+      // A tap, not a drag — select the skill under the finger.
+      if (Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY) > 10) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const idx = getHitIndex(t.clientX - rect.left, t.clientY - rect.top);
+      if (idx < 0) {
+        setSelected(null);
+        return;
+      }
+      const p = points.current[idx];
+      const [rx, ry, rz] = rotate(p.ox, p.oy, p.oz, state.rotX, state.rotY);
+      const scale = (size * 0.38) / (2.5 / state.zoom + rz);
+      setSelected({
+        name: p.name,
+        cat: p.cat,
+        level: p.level,
+        sx: size / 2 + rx * scale,
+        sy: size / 2 + ry * scale,
+      });
+    }
 
     canvas.addEventListener("mousedown", onMouseDown);
     canvas.addEventListener("mousemove", onMouseMove);
@@ -201,7 +238,7 @@ export default function Skills3DGlobe() {
     canvas.addEventListener("touchend", onTouchEnd);
 
     function getHitIndex(mx: number, my: number): number {
-      const W = canvas.width, H = canvas.height;
+      const W = size, H = size;
       const dist = 2.5 / state.zoom;
       let best = -1, bestDist = 999;
       points.current.forEach((p, i) => {
@@ -219,7 +256,7 @@ export default function Skills3DGlobe() {
 
     // ── Render loop ──
     function render() {
-      const W = canvas.width, H = canvas.height;
+      const W = size, H = size;
       ctx.clearRect(0, 0, W, H);
       const dist = 2.5 / state.zoom;
 
@@ -348,7 +385,7 @@ export default function Skills3DGlobe() {
       {/* Ambient glow behind globe */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
         <div style={{
-          width: "420px", height: "420px", borderRadius: "50%",
+          width: "min(420px, 100%)", aspectRatio: "1", borderRadius: "50%",
           background: "radial-gradient(circle, rgba(0,229,255,0.06) 0%, rgba(168,85,247,0.04) 50%, transparent 70%)",
           filter: "blur(20px)"
         }} />
@@ -367,19 +404,20 @@ export default function Skills3DGlobe() {
       />
 
       {/* Hint label */}
-      <p className="mt-4 text-xs text-muted-foreground tracking-widest uppercase select-none">
-        Drag to rotate · Scroll to zoom · Click a skill
+      <p className="mt-4 text-[0.62rem] sm:text-xs text-muted-foreground tracking-[0.15em] sm:tracking-widest uppercase select-none text-center px-2">
+        <span className="hidden sm:inline">Drag to rotate · Scroll to zoom · Click a skill</span>
+        <span className="sm:hidden">Swipe to rotate · Tap a skill</span>
       </p>
 
       {/* Selected skill card */}
       <AnimatePresence>
         {selected && (
           <motion.div
-            className="absolute z-20 rounded-xl border p-4 min-w-[200px]"
+            className="absolute z-20 rounded-xl border p-4 w-[min(200px,60vw)]"
             style={{
-              top: (selected.sy / (canvasRef.current?.height || 500)) * 100 + "%",
-              left: selected.sx > (canvasRef.current?.width || 500) / 2 ? "auto" : "55%",
-              right: selected.sx > (canvasRef.current?.width || 500) / 2 ? "55%" : "auto",
+              top: (selected.sy / (cssSize || 500)) * 100 + "%",
+              left: selected.sx > (cssSize || 500) / 2 ? "auto" : "55%",
+              right: selected.sx > (cssSize || 500) / 2 ? "55%" : "auto",
               background: "rgba(5,5,20,0.92)",
               backdropFilter: "blur(12px)",
               borderColor: CAT_COLORS[selected.cat] + "60",

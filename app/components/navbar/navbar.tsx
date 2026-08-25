@@ -59,13 +59,13 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-cyan-300 via-white to-fuchsia-400 bg-clip-text text-transparent uppercase tracking-[0.25em]">
+            <Link href="/" className="text-base sm:text-lg md:text-xl font-bold bg-gradient-to-r from-cyan-300 via-white to-fuchsia-400 bg-clip-text text-transparent uppercase tracking-[0.18em] sm:tracking-[0.25em] whitespace-nowrap">
               Vinod Kumar
             </Link>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-1">
+          <div className="hidden lg:flex space-x-1">
             {navItems.map((item) => (
               <motion.div
                 key={item.name}
@@ -104,7 +104,7 @@ export default function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden border border-white/10 bg-white/5 backdrop-blur-xl"
+              className="lg:hidden border border-white/10 bg-white/5 backdrop-blur-xl"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -116,7 +116,7 @@ export default function Navbar() {
         <AnimatePresence>
           {isOpen && (
             <motion.div 
-              className="md:hidden glass-card rounded-b-2xl shadow-lg overflow-hidden"
+              className="lg:hidden glass-card rounded-b-2xl shadow-lg overflow-hidden"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}

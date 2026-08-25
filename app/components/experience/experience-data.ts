@@ -1,12 +1,21 @@
 export type TrackId = "work" | "internship" | "leadership" | "volunteering";
+export type DomainId = "fullstack" | "threed" | "aiml" | "data" | "engineering" | "community";
+
+/** [year, month] with month 1-12. `null` end means "still running". */
+export type YearMonth = [number, number];
 
 export interface ExperienceEntry {
   id: string;
   title: string;
   company: string;
+  /** Compact label for the timeline chart, where space is tight. */
+  shortName: string;
   track: TrackId;
+  domain: DomainId;
   employment: string;
   period: string;
+  start: YearMonth;
+  end: YearMonth | null;
   /** Duration in months — drives the timeline bar. */
   months: number;
   durationLabel: string;
@@ -19,6 +28,15 @@ export interface ExperienceEntry {
   color: string;
 }
 
+export const DOMAINS: { id: DomainId; label: string; color: string }[] = [
+  { id: "threed", label: "3D & Digital Twins", color: "#00e5ff" },
+  { id: "fullstack", label: "Full-Stack", color: "#a855f7" },
+  { id: "aiml", label: "AI / ML", color: "#22c55e" },
+  { id: "data", label: "Data & APIs", color: "#fbbf24" },
+  { id: "engineering", label: "Engineering", color: "#f97316" },
+  { id: "community", label: "Community", color: "#ec4899" },
+];
+
 export const TRACKS: { id: TrackId | "all"; label: string; color: string }[] = [
   { id: "all", label: "All", color: "#00e5ff" },
   { id: "work", label: "Full-time", color: "#00e5ff" },
@@ -30,6 +48,10 @@ export const TRACKS: { id: TrackId | "all"; label: string; color: string }[] = [
 export const EXPERIENCES: ExperienceEntry[] = [
   {
     id: "machani",
+    shortName: "Machani Group",
+    domain: "threed",
+    start: [2026, 5],
+    end: null,
     title: "Software Engineer",
     company: "Machani Group",
     track: "work",
@@ -53,6 +75,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "enerzyflow",
+    shortName: "Enerzyflow",
+    domain: "fullstack",
+    start: [2025, 8],
+    end: [2026, 3],
     title: "Software Engineer",
     company: "Enerzyflow India",
     track: "work",
@@ -74,6 +100,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "claimbuddy",
+    shortName: "ClaimBuddy",
+    domain: "data",
+    start: [2025, 5],
+    end: [2025, 7],
     title: "Full Stack Developer",
     company: "ClaimBuddy",
     track: "internship",
@@ -95,6 +125,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "delishia",
+    shortName: "Delishia",
+    domain: "aiml",
+    start: [2025, 2],
+    end: [2025, 4],
     title: "Full Stack Developer",
     company: "Delishia Analytics",
     track: "internship",
@@ -116,6 +150,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "bluestock",
+    shortName: "Bluestock",
+    domain: "fullstack",
+    start: [2024, 7],
+    end: [2024, 7],
     title: "Frontend Developer",
     company: "Bluestock™",
     track: "internship",
@@ -136,6 +174,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "cmpdi",
+    shortName: "CMPDI",
+    domain: "engineering",
+    start: [2024, 5],
+    end: [2024, 6],
     title: "Intern",
     company: "Central Mine Planning & Design Institute",
     track: "internship",
@@ -157,6 +199,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "tmes",
+    shortName: "TMES",
+    domain: "fullstack",
+    start: [2022, 9],
+    end: [2023, 1],
     title: "Core Team Member",
     company: "TMES, IIT Kharagpur",
     track: "leadership",
@@ -177,6 +223,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "greatstep",
+    shortName: "GREAT STEP",
+    domain: "fullstack",
+    start: [2022, 9],
+    end: [2023, 1],
     title: "Core Team Member",
     company: "GREAT STEP, IIT Kharagpur",
     track: "leadership",
@@ -195,6 +245,10 @@ export const EXPERIENCES: ExperienceEntry[] = [
   },
   {
     id: "ncc",
+    shortName: "NCC Air Wing",
+    domain: "community",
+    start: [2021, 12],
+    end: [2023, 4],
     title: "Cadet",
     company: "National Cadet Corps — India",
     track: "volunteering",

@@ -14,6 +14,7 @@ import {
   Sparkles,
   Timer,
 } from "lucide-react";
+import CareerMap from "./CareerMap";
 import { EXPERIENCES, MAX_MONTHS, TRACKS, type ExperienceEntry, type TrackId } from "./experience-data";
 
 const MODE_ICON = {
@@ -283,6 +284,9 @@ export default function Experience() {
           <StatTile icon={<Briefcase className="w-4 h-4" />} value={stats.roles} suffix="" label="Roles Held" color="#22c55e" delay={0.16} />
           <StatTile icon={<Layers className="w-4 h-4" />} value={stats.technologies} suffix="+" label="Technologies" color="#fbbf24" delay={0.24} />
         </div>
+
+        {/* ── career map visualisation ── */}
+        <CareerMap />
 
         {/* ── filter tabs ── */}
         <div className="exp-filters" role="tablist" aria-label="Filter experience by track">
